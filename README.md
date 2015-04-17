@@ -1,22 +1,67 @@
 # rshell
-This is the repository of the HW0, rshell. I have been struggling with git and I hope I'll learn one day. By now I am not sure if I am updating everything right or not and I feel I am going to cry... I am the whole week doing this and I feel like I do not program there is a long time... OH WAIT!... There is a long time :( 
+# writing a basic command shell
+
+This shell will perform the following steps:
+
+1. Print the logged user and host if possible. So the command prompt `$` appears.
+
+2. Read in a command on one line.
+Commands will have the form:
+```
+cmd         = executable [ argumentList ] [ connector cmd ]
+connector   = || or && or ;
+```
+where `executable` is an executable program in the `PATH` and `argumentList` is a list of zero or more arguments separated by spaces.
+The connector is an optional way you can run multiple commands at once.
+If a command is followed by `;`, then the next command is always executed;
+if a command is followed by `&&`, then the next command is executed only if the first one succeeds;
+if a command is followed by `||`, then the next command is executed only if the first one fails.
+For example:
+```
+$ ls -a
+$ echo hello
+$ mkdir test
+```
+is equivalent to:
+```
+$ ls -a; echo hello; mkdir test
+```
+There is no limit to the number of commands that can be chained together using these operators,
+and this program is able to handle any combination of operators.
+Example that this program can handle:
+```
+$ ls -a; echo hello && mkdir test || echo world; git status
+```
 
 # Installation
 To execute the program just follow the steps:
-<br>1 - Download the project
-<br>2 - Open the terminal
-<br>3- Go inside of the directory rshell by typing:
-<br>`cd <path of the directory here>/rshell`
-<br>4 - Once you are in the right directory, just type 
-<br>`$ make` 
-<br>After that, if you want to run the software, type:
-<br>`$ make run`
-<br>to run the software or;
-<br>`$ make leak-check`
-<br>to check some memory leaks;
+1 - Download the project
+
+2 - Open the terminal
+
+3- Go inside of the directory rshell by typing:
+
+`cd <path of the directory here>/rshell`
+
+4 - Once you are in the right directory, just type 
+
+`$ make` 
+
+After that, if you want to run the software, type:
+
+`$ bin/rshell
+
+to run the software or;
+
+`$ make leak-check`
+
+to check some memory leaks;
 
 # Dependencies
+
 By now this software do not use any external library.
 
 #Bugs/Limitations/Issues
-Sometimes occurs unexpected erros which seems to be something releated with the mallocs that the new operator makes. However, it is not always, so I am trying to debug everything to do not happen this anymore.
+
+Sometimes occurs unexpected erros which seems to be something releated with the mallocs that the new operator makes. 
+However, it is not always, so I am trying to debug everything to do not happen this anymore.
