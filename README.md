@@ -31,7 +31,7 @@ Example that this program can handle:
 ```
 $ ls -a; echo hello && mkdir test || echo world; git status
 ```
-Running bin/rshell inside of the rshell works.
+Running `bin/rshell` inside of the rshell works.
 
 # Installation
 To execute the program just follow the steps:
@@ -68,5 +68,5 @@ However, it is not always, so I am trying to debug everything to do not happen t
 When trying to do the command: `echo "Hi!" > README` The following error appears SOMETIMES:
 `*** glibc detected *** bin/rshell: malloc(): memory corruption: 0x0000000000af6270 ***`
 and sometimes just echo `"Hi!" > README` as expected since I did not treated `>` and `<` as connectors.
-I.e., I am having an undefined behavior.
+i.e., I am having an undefined behavior.
 
