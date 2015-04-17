@@ -7,4 +7,4 @@ all: bin rshell
 bin:
 	test -d $(objdir) || mkdir $(objdir)
 rshell: 
-	$(compiler) ./src/hw0.cpp $(opt) -o ./bin/rshell
+	$(compiler) hw0.cpp $(opt) -o ./bin/rshell
