@@ -16,7 +16,7 @@ After that, if you want to run the software, type:
 <br>to check some memory leaks;
 
 # Dependencies
-By now this software do not use any external library 
+By now this software do not use any external library.
 
 #Bugs/Limitations/Issues
 Sometimes occurs unexpected erros which seems to be something releated with the mallocs that the new operator makes. However, it is not always, so I am trying to debug everything to do not happen this anymore.
