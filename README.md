@@ -1,5 +1,4 @@
 # rshell
-# writing a basic command shell
 
 This shell will perform the following steps:
 
