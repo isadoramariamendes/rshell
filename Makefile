@@ -1,8 +1,10 @@
-all: 
-	g++ hw0.cpp -o hw0 -Wall -Werror -ansi -pedantic
+opt:= -Wall -Werror -ansi -pedantic
+compiler := g++
+objdir := bin
 
-run: all
-	./hw0
+all: bin rshell
 
-leak-check: all
-	valgrind --leak-check=full ./hw0 --show-reachable=yes
+bin:
+	test -d $(objdir) || mkdir $(objdir)
+rshell: 
+	$(compiler) ./src/hw0.cpp $(opt) -o ./bin/rshell
