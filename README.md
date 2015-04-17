@@ -49,7 +49,7 @@ To execute the program just follow the steps:
 
 After that, if you want to run the software, type:
 
-`$ bin/rshell
+`$ bin/rshell`
 
 to run the software or;
 
