@@ -57,7 +57,7 @@ bool isComment(char *cmd){
  *  INPUT: char *cmd - holds a command.
  *  OUTPUT: The size of the command.
  */
-size_t cmdize(char *cmd) {
+size_t cmdSize(char *cmd) {
     return strlen(cmd);
 }
 
@@ -129,7 +129,7 @@ bool isExit(char *c){
 void tok_space (char **cmdlist, int size) {
     int curr = 0;
     unsigned index = 0;
-    char **temp = new char *[words + 1];
+    char **temp = new char *[size + 1];
     
     while (curr != size) {
         int argc = 0;
@@ -184,7 +184,7 @@ int main()
         char *cmd = getCommands();
         
         if (!isComment(cmd)) {
-            char **cmdlist = new char *[cmdize(cmd) + 1];
+            char **cmdlist = new char *[cmdSize(cmd) + 1];
             tok_comment(cmd);
             read_order(cmd);
             int list_size = tok_conn(cmdlist,cmd);

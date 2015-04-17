@@ -5,4 +5,4 @@ run: all
 	./hw0
 
 leak-check: all
-	@valgrind --leak-check=full ./hw0
+	valgrind --leak-check=full ./hw0 --show-reachable=yes
