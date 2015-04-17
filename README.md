@@ -31,7 +31,6 @@ Example that this program can handle:
 ```
 $ ls -a; echo hello && mkdir test || echo world; git status
 ```
-Running `bin/rshell` inside of the rshell works.
 
 # Installation
 To execute the program just follow the steps:
@@ -55,7 +54,7 @@ to run the software or;
 
 `$ make leak-check`
 
-to check some memory leaks;
+to check some memory leaks using valgrind;
 
 # Dependencies
 
@@ -64,9 +63,11 @@ By now this software do not use any external library.
 #Bugs/Limitations/Issues
 
 Sometimes occurs unexpected erros which seems to be something releated with the mallocs that the new operator makes. 
-However, it is not always, so I am trying to debug everything to do not happen this anymore.
+However, it is really rare to happen. I am trying to debug everything to do not happen this anymore using valgrind.
 When trying to do the command: `echo "Hi!" > README` The following error appears SOMETIMES:
+
 `*** glibc detected *** bin/rshell: malloc(): memory corruption: 0x0000000000af6270 ***`
-and sometimes just echo `"Hi!" > README` as expected since I did not treated `>` and `<` as connectors.
+
+but sometimes just echo `"Hi!" > README` as expected since I did not treated `>` and `<` as connectors.
 i.e., I am having an undefined behavior.
 
