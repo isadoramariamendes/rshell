@@ -9,7 +9,7 @@ To execute the program just follow the steps:
 <br>`cd <path of the directory here>/rshell`
 <br>4 - Once you are in the right directory, just type 
 <br>`$ make` 
-After that, if you want to run the software, type:
+<br>After that, if you want to run the software, type:
 <br>`$ make run`
 <br>to run the software or;
 <br>`$ make leak-check`
