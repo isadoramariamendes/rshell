@@ -139,7 +139,7 @@ void tok_space (char **cmdlist, int size) {
                 exit(0);
             }
             ++argc;
-            temp[argc] = strtok(NULL, " ");							//temp[argc] holds the "space-tokenized" commands
+            temp[argc] = strtok(NULL, " "); 
         }
         argc = 0;
         
@@ -148,7 +148,7 @@ void tok_space (char **cmdlist, int size) {
             perror("fork");
         }
         else if (pid == 0) {
-            int ret = execvp(temp[argc], temp);						//There is some black magic happening here
+            int ret = execvp(temp[argc], temp);
             if (ret == -1) {
                 perror("execvp");
             }
@@ -194,4 +194,3 @@ int main()
     }
     return 0;
 }
-//This is a comment just to make sure that it is been uploaded in github
