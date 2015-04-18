@@ -68,11 +68,15 @@ To execute the program just follow the steps:
 
 `cd <path of the directory here>/rshell`
 
-4 - Once you are in the right directory, just type 
+4 - Type:
+
+`git checkout hw0`
+
+5 - Once you are in the right directory, type:
 
 `$ make` 
 
-After that, if you want to run the software, type:
+6 - If you want to run the software, type:
 
 `$ bin/rshell`
 
@@ -82,11 +86,11 @@ to run the software or;
 
 to check some memory leaks using valgrind;
 
+
 # Dependencies
 
 By now this software do not use any external library.
 
 #Bugs/Limitations/Issues
 
-This program has undefined behavior when executing `"Hi!" > README`. Sometimes it just echo `"Hi!" > README` as expected since I did not treated `>` and `<` as connectors, but sometimes I have other errors.
-
+Any command thar depends on `>` and `<` as connectors do not work properly. Because of it sometimes it has undefined behavior when executing `"Hi!" > README`. Sometimes it just echo `"Hi!" > README` as expected, but sometimes I have other errors.
