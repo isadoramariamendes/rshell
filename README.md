@@ -31,6 +31,32 @@ Example that this program can handle:
 ```
 $ ls -a; echo hello && mkdir test || echo world; git status
 ```
+In case of commands associated by connectors this program will execute from left to right.
+Let's suppose that the command above is executed one time. In that case, the result would be:
+```
+ls -a; echo hello && mkdir test || echo world; git status
+.  ..  bin  .git  hw0.cpp  LICENSE  main.cpp  Makefile	README.md  test
+hello
+```
+
+i.e, the part that goes after the connector || won't be executed because the parte before || is true. However, in case of executing the same line again, the result would be:
+
+
+```
+.  ..  bin  .git  hw0.cpp  LICENSE  main.cpp  Makefile	README.md  test
+hello
+mkdir: cannot create directory `test': File exists
+world
+# On branch master
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	<list of untracked files here>
+#	nothing added to commit but untracked files present (use "git add" to track)
+```
+
+that's because mkdir test failed. So the parte of the command that comes after the connector || must be executed.`
+In the tests directory can be found a file called exec.script that contains all of the test cases I tried.
 
 # Installation
 To execute the program just follow the steps:
