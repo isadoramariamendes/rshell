@@ -39,7 +39,7 @@ ls -a; echo hello && mkdir test || echo world; git status
 hello
 ```
 
-i.e, the part that goes after the connector || won't be executed because the parte before || is true. However, in case of executing the same line again, the result would be:
+i.e, the part that goes after the connector `||` won't be executed because the parte before `||` is true. However, in case of executing the same line again, the result would be:
 
 
 ```
@@ -55,7 +55,7 @@ world
 #	nothing added to commit but untracked files present (use "git add" to track)
 ```
 
-that's because mkdir test failed. So the parte of the command that comes after the connector || must be executed.`
+that's because mkdir test failed. So the parte of the command that comes after the connector `||` must be executed.`
 In the tests directory can be found a file called exec.script that contains all of the test cases I tried.
 
 # Installation
