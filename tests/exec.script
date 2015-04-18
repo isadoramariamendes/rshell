@@ -1,0 +1,109 @@
+Script started on Fri 17 Apr 2015 06:00:04 PM PDT
+~
+imend009@hammer $ ls
+calcgrade.sh  [0m[01;34mcs100[0m/  [01;34mDesktop[0m/  [01;34mDownloads[0m/  [01;34mrshell[0m/  [01;34mucr-cs100[0m/
+[m~
+imend009@hammer $ rshell/bin/rshell
+imend009@hammer.cs.ucr.edu $ echo a && echo b || echo c; exit
+a
+b
+imend009@hammer.cs.ucr.edu $ echo a && echo b && echo c; 
+a
+b
+c
+imend009@hammer.cs.ucr.edu $ echo a || echo b && echo c; 
+a
+imend009@hammer.cs.ucr.edu $ echo a && echo b; echo c; 
+a
+b
+c
+imend009@hammer.cs.ucr.edu $ \
+execvp: No such file or directory
+imend009@hammer.cs.ucr.edu $ vim main.cpp
+7[?47h[?1h=[1;31r[m[H[2J[31;1H"main.cpp" [New File][>c[1;1H[33m  1 [m
+[1m[34m~                                                                                                     [3;1H~                                                                                                     [4;1H~                                                                                                     [5;1H~                                                                                                     [6;1H~                                                                                                     [7;1H~                                                                                                     [8;1H~                                                                                                     [9;1H~                                                                                                     [10;1H~                                                                                                     [11;1H~                                                                                                     [12;1H~                                                                                                     [13;1H~                                                                                                     [14;1H~                                                                                                     [15;1H~                                                                                                     [16;1H~                                                                                                     [17;1H~                                                                                                     [18;1H~                                                                                                     [19;1H~                                                                                                     [20;1H~                                                                                                     [21;1H~                                                                                                     [22;1H~                                                                                                     [23;1H~                                                                                                     [24;1H~                                                                                                     [25;1H~                                                                                                     [26;1H~                                                                                                     [27;1H~                                                                                                     [28;1H~                                                                                                     [29;1H~                                                                                                     [30;1H~                                                                                                     [m[31;85H0,0-1[9CAll[1;5HP+q436f\P+q6b75\P+q6b64\P+q6b72\P+q6b6c\P+q2332\P+q2334\P+q2569\P+q2a37\P+q6b31\[31;1H[K[31;1H:q[31;1H[K[31;1H[?1l>[2J[?47l8imend009@hammer.cs.ucr.edu $ |||
+imend009@hammer.cs.ucr.edu $ &&&
+imend009@hammer.cs.ucr.edu $ ;;;
+imend009@hammer.cs.ucr.edu $     #just spaces
+imend009@hammer.cs.ucr.edu $ #just comment or empty
+imend009@hammer.cs.ucr.edu $ 
+imend009@hammer.cs.ucr.edu $ git status; git log
+# On branch master
+#
+# Initial commit
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	.DCOPserver_well.cs.ucr.edu_NODISPLAY
+#	.ICEauthority
+#	.Xauthority
+#	.bash_history
+#	.bash_logout
+#	.bashrc
+#	.cache/
+#	.config/
+#	.emacs.d/
+#	.gconfd/
+#	.gitconfig
+#	.gitlearn/
+#	.gnupg/
+#	.kde/
+#	.local/
+#	.macromedia/
+#	.mcop/
+#	.mozilla/
+#	.nx/
+#	.profile
+#	.qt/
+#	.ssh/
+#	.thumbnails/
+#	.viminfo
+#	.vimrc
+#	Desktop/
+#	Downloads/
+#	calcgrade.sh
+#	cs100/
+#	rshell/
+#	ucr-cs100/
+nothing added to commit but untracked files present (use "git add" to track)
+[?1h=fatal: bad default revision 'HEAD'[m
+[K[?1l>imend009@hammer.cs.ucr.edu $ ls -a; echo hello && mkdir test || echo world; git status; exit
+.	       .config				      .git	       .local	    .redhat
+..	       cs100				      .gitconfig       .macromedia  rshell
+.adobe	       .DCOPserver_well.cs.ucr.edu_NODISPLAY  .gitlearn        .mcop	    .ssh
+.bash_history  Desktop				      .gnome2	       .mozilla     .thumbnails
+.bash_logout   Downloads			      .gnome2_private  .nx	    ucr-cs100
+.bashrc        .emacs.d				      .gnupg	       .pki	    .viminfo
+.cache	       .gconf				      .ICEauthority    .profile     .vimrc
+calcgrade.sh   .gconfd				      .kde	       .qt	    .Xauthority
+hello
+imend009@hammer.cs.ucr.edu $ ls -a; echo hello && mkdir test && echo world; git status; exit
+.	       cs100				      .gitlearn        .mozilla  .thumbnails
+..	       .DCOPserver_well.cs.ucr.edu_NODISPLAY  .gnome2	       .nx	 ucr-cs100
+.adobe	       Desktop				      .gnome2_private  .pki	 .viminfo
+.bash_history  Downloads			      .gnupg	       .profile  .vimrc
+.bash_logout   .emacs.d				      .ICEauthority    .qt	 .Xauthority
+.bashrc        .gconf				      .kde	       .redhat
+.cache	       .gconfd				      .local	       rshell
+calcgrade.sh   .git				      .macromedia      .ssh
+.config        .gitconfig			      .mcop	       test
+hello
+mkdir: cannot create directory `test': File exists
+imend009@hammer.cs.ucr.edu $ ||||||||||\\\
+execvp: No such file or directory
+imend009@hammer.cs.ucr.edu $ exit; 
+~
+imend009@hammer $ rshell/bin/rshellls[Krshell/bin/rshell
+imend009@hammer.cs.ucr.edu $ exit;
+~
+imend009@hammer $ rshell/bin/rshell
+imend009@hammer.cs.ucr.edu $ exi&&  t&&
+~
+imend009@hammer $ rshell/bin/rshell
+imend009@hammer.cs.ucr.edu $ exit||
+~
+imend009@hammer $ exit #with space after t[Kth [Ke word exit
+exit
+
+Script done on Fri 17 Apr 2015 06:03:51 PM PDT
