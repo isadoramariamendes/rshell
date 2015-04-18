@@ -56,7 +56,7 @@ world
 ```
 
 that's because `mkdir test` failed, since the directory was already created. So the part of the command that comes after the connector `||` must be executed.`
-In the tests directory can be found a file called exec.script that contains all of the test cases I tried. Summaryzing, it can execute others programs, the own rshell program, handle connectors aforementioned and etc.
+In the tests directory can be found a file called exec.script that contains all of the test cases I tried. Summaryzing, it can execute others programs, the own rshell program, handle connectors aforementioned, `CTRL-C` and etc.
 
 # Installation
 To execute the program just follow the steps:
