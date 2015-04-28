@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 #include <dirent.h>
 #include <vector>
 #include <sys/stat.h>
