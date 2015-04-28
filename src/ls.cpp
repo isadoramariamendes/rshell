@@ -139,7 +139,5 @@ int main(int argc, char **argv)
         }
         names.clear();
     }
-    
-    //cout << "OI" << endl;
     return 0;
 }
