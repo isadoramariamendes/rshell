@@ -6,7 +6,6 @@
 #include <iomanip>
 using namespace std;
 
-struct stat s;
 
 void printPermissions(int protec) {
     if (S_ISDIR(protec) != 0) cout << "d";
@@ -49,15 +48,15 @@ void resetColor(){
 
 void print_aFlag(vector<string> &v) {
     for (unsigned i = 0; i < v.size(); ++i) {
+        struct stat s;
         stat(v.at(i).c_str(), &s);
-        int protec = s.st_mode;
         resetColor();
         if (v.at(i).find('.') == 0) {//axou ponto
-            changeColor(1, protec);
+            changeColor(1, s.st_mode);
             cout << v.at(i);
         }
         else {
-            changeColor(0, protec);
+            changeColor(0, s.st_mode);
             cout << v.at(i);
         }
         cout << " ";
@@ -67,18 +66,18 @@ void print_aFlag(vector<string> &v) {
 
 void print_alFlag(vector<string> &v) {
     for (unsigned i = 0; i < v.size(); ++i) {
+        struct stat s;
         stat(v.at(i).c_str(), &s);
-        int protec = s.st_mode;
         resetColor();
-        printPermissions(protec);
+        printPermissions(s.st_mode);
         printInformation(s);
         if (v.at(i).find('.') == 0) {//axou ponto
-            changeColor(1, protec);
+            changeColor(1, s.st_mode);
             cout << v.at(i);
             
         }
         else {
-            changeColor(0, protec);
+            changeColor(0, s.st_mode);
             cout << v.at(i);
         }
         resetColor();
@@ -129,6 +128,7 @@ int main(int argc, char **argv)
     
     vector <string> names;
     for (int k = 0; k < dir_count; ++k) {
+        struct stat s;
         stat(argv[k], &s);
         
         DIR *dirp = opendir(argv[k]);
@@ -137,11 +137,6 @@ int main(int argc, char **argv)
             perror("opendir");
         }
         else {
-                if (dir_count > 1){
-                resetColor();
-                printStr(argv[k]);//print folders name
-                cout << ":" << endl;
-            }
             dirent *direntp;
             while ((direntp = readdir(dirp))) {
                 resetColor();
