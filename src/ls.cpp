@@ -4,11 +4,14 @@
 #include <vector>
 #include <sys/stat.h>
 #include <iomanip>
+#include <string.h>
+
 using namespace std;
 
 
 void printPermissions(int protec) {
     if (S_ISDIR(protec) != 0) cout << "d";
+    else if (S_ISLNK(protec) != 0) cout << "l";
     else cout << "-";
     cout << ((protec & S_IRUSR)?"r":"-");
     cout << ((protec & S_IWUSR)?"w":"-");
@@ -22,12 +25,12 @@ void printPermissions(int protec) {
 }
 
 void printInformation(struct stat s) {
-    cout << "   " << setw(5) << s.st_nlink;
-    cout << "   " << setw(10) << s.st_uid;
-    cout << "   " << setw(10) << s.st_gid;
-    cout << "   " << setw(10) << s.st_size;
-    cout << "   " << setw(15) << s.st_mtime;
-    cout << "   ";
+    cout << "\t" << setw(5) << s.st_nlink;
+    cout << "\t" << setw(5) << s.st_uid;
+    cout << "\t" << setw(5) << s.st_gid;
+    cout << "\t" << setw(10) << s.st_size;
+    cout << "\t" << setw(15) << s.st_mtime;
+    cout << "\t";
 }
 
 void printStr(char *c) {
@@ -50,8 +53,8 @@ void print_time(vector<string> &v) {
     int total = 0;
     for (unsigned i = 0; i < v.size(); ++i) {
         struct stat s;
-        if (stat(v.at(i).c_str(), &s) == -1) {
-            perror(string("There was an error with stat(" + v.at(i) + ")").c_str());
+        if (lstat(v.at(i).c_str(), &s) == -1) {
+            perror(string("ERROR(" + v.at(i) + ")").c_str());
         }
         else {
             total += s.st_blocks*512;
@@ -64,8 +67,8 @@ void print_time(vector<string> &v) {
 void print_aFlag(vector<string> &v, vector<string> &n) {
     for (unsigned i = 0; i < v.size(); ++i) {
         struct stat s;
-        if (stat(v.at(i).c_str(), &s) == -1) {
-            perror(string("There was an error with stat(" + v.at(i) + ")").c_str());
+        if (lstat(v.at(i).c_str(), &s) == -1) {
+            perror(string("ERROR lstat(" + v.at(i) + ")").c_str());
         }
         else {
             if (v.at(i).find('.') == 0) {//axou ponto
@@ -86,8 +89,8 @@ void print_alFlag(vector<string> &v, vector<string> &n) {
     for (unsigned i = 0; i < v.size(); ++i) {
         struct stat s;
         stat(v.at(i).c_str(), &s);
-        if (stat(v.at(i).c_str(), &s) == -1) {
-            perror(string("There was an error with stat(" + v.at(i) + ")").c_str());
+        if (lstat(v.at(i).c_str(), &s) == -1) {
+            perror(string("ERROR: lstat(" + v.at(i) + ")").c_str());
         }
         else {
             resetColor();
@@ -154,8 +157,8 @@ int main(int argc, char **argv)
 
     for (int k = 0; k < dir_count; ++k) {
         struct stat s;
-        if (stat(argv[k], &s) < 0) {
-            perror("stat");
+        if (lstat(argv[k], &s) < 0) {
+            perror("lstat");
             cout << endl;
         }
         else {
