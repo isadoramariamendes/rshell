@@ -1,3 +1,50 @@
+#ls
+This program is a C++ program that implements a subset of the GNU ls command. It is expected to support: the -a, -l and -R optional flags; and the ability to pass in zero, one, or many files. 
+
+To implement ls, I used the opendir, closedir, readdir and stat syscalls, which were all checked using `perror`. 
+
+# Installation
+To execute the program just follow the steps:
+1 - Clone the project
+
+2 - Open the terminal
+
+3- Go inside of the directory rshell by typing:
+
+`cd <path of the directory here>/rshell`
+
+4 - Type:
+
+`git checkout hw1`
+
+5 - Once you are in the right directory, type:
+
+`$ make` 
+
+6 - If you want to run the software, type:
+
+`$ bin/ls -<optional labels here>`
+
+to run the software or;
+
+`$ make leak-check`
+
+to check some memory leaks using valgrind;
+
+
+# Dependencies
+
+By now this software do not use any external library.
+
+#Bugs/Limitations/Issues
+
+The -R label was not implemented, so any use of the label -R will be executed as it wasn't there.
+
+
+______________________________________________________________________________________
+
+
+
 # rshell
 
 This shell will perform the following steps:
@@ -60,7 +107,7 @@ In the tests directory can be found a file called exec.script that contains all 
 
 # Installation
 To execute the program just follow the steps:
-1 - Download the project
+1 - Clone the project
 
 2 - Open the terminal
 
