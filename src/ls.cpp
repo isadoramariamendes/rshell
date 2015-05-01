@@ -46,42 +46,50 @@ void resetColor(){
     cout<<"\x1b[0m";
 }
 
-void print_aFlag(vector<string> &v) {
+void print_aFlag(vector<string> &v, vector<string> &n) {
     for (unsigned i = 0; i < v.size(); ++i) {
         struct stat s;
-        stat(v.at(i).c_str(), &s);
-        resetColor();
-        if (v.at(i).find('.') == 0) {//axou ponto
-            changeColor(1, s.st_mode);
-            cout << v.at(i);
+        if (stat(v.at(i).c_str(), &s) == -1) {
+            perror(string("There was an error with stat(" + v.at(i) + ")").c_str());
         }
         else {
-            changeColor(0, s.st_mode);
-            cout << v.at(i);
+            resetColor();
+            if (v.at(i).find('.') == 0) {//axou ponto
+                changeColor(1, s.st_mode);
+                cout << n.at(i);
+            }
+            else {
+                changeColor(0, s.st_mode);
+                cout << n.at(i);
+            }
+            cout << " ";
         }
-        cout << " ";
     }
-    
 }
 
-void print_alFlag(vector<string> &v) {
+void print_alFlag(vector<string> &v, vector<string> &n) {
     for (unsigned i = 0; i < v.size(); ++i) {
         struct stat s;
         stat(v.at(i).c_str(), &s);
-        resetColor();
-        printPermissions(s.st_mode);
-        printInformation(s);
-        if (v.at(i).find('.') == 0) {//axou ponto
-            changeColor(1, s.st_mode);
-            cout << v.at(i);
-            
+        if (stat(v.at(i).c_str(), &s) == -1) {
+            perror(string("There was an error with stat(" + v.at(i) + ")").c_str());
         }
         else {
-            changeColor(0, s.st_mode);
-            cout << v.at(i);
+            resetColor();
+            printPermissions(s.st_mode);
+            printInformation(s);
+            if (v.at(i).find('.') == 0) {//axou ponto
+                changeColor(1, s.st_mode);
+                cout << n.at(i);
+                
+            }
+            else {
+                changeColor(0, s.st_mode);
+                cout << n.at(i);
+            }
+            resetColor();
+            cout << endl;
         }
-        resetColor();
-        cout << endl;
     }
 }
 
@@ -127,6 +135,8 @@ int main(int argc, char **argv)
     //end of flags checking
     
     vector <string> names;
+    vector <string> dirs;
+
     for (int k = 0; k < dir_count; ++k) {
         struct stat s;
         if (stat(argv[k], &s) < 0) {
@@ -140,32 +150,61 @@ int main(int argc, char **argv)
             }
             else {
                 dirent *direntp;
-                resetColor();
-                printStr(argv[k]);//print folders name
-                cout << ":" << endl;
+                if (strcmp(argv[k], ".") != 0) {
+                    resetColor();
+                    printStr(argv[k]);//print folders name
+                    cout << ":" << endl;
+                }
+                //creates list of name of files
                 while ((direntp = readdir(dirp))) {
                     if (direntp == NULL) perror("readdir");
-                    else {// creat list of content's name. it can be with hidden files or not
-                        if (!flag_a) {
-                            if (direntp->d_name[0]!='.') {
+                    else {
+
+                        if (strcmp(argv[k], ".") == 0) {
+                            if (!flag_a) { //exclude hidden files from the list
+                                if (direntp->d_name[0]!='.') {
+                                    string curr_str(direntp->d_name);
+                                    names.push_back(curr_str);
+                                    dirs.push_back(curr_str);
+
+                                }
+                            }
+                            else { //list with --all files
                                 string curr_str(direntp->d_name);
                                 names.push_back(curr_str);
+                                dirs.push_back(curr_str);
+
                             }
+                            
                         }
                         else {
-                            string curr_str(direntp->d_name);
-                            names.push_back(curr_str);
+
+                            if (!flag_a) { //exclude hidden files from the list
+                                if (direntp->d_name[0]!='.') {
+                                    string curr_str = string(direntp->d_name);
+                                    string dir = "/" + string(curr_str);
+                                    names.push_back(string(curr_str));
+                                    dirs.push_back(argv[k] + dir);
+                                }
+                            }
+                            else { //list with --all files
+                                string curr_str = string(direntp->d_name);
+                                string dir = "/" + string(curr_str);
+                                names.push_back(string(curr_str));
+                                dirs.push_back(argv[k] + dir);
+                            }
                         }
+
                     }
                 }
                 if (!flag_l) { //flag a
                     resetColor();
-                    print_aFlag(names);
+                    print_aFlag(dirs, names);
                     resetColor();
                 }
-                else {// flag al or l, dependes on the contents of names
+                else {// flag al or l, dependes on the contents of "names"
                     resetColor();
-                    print_alFlag(names);
+                    print_alFlag(dirs, names);
                     resetColor();
                 }
                 if (closedir(dirp) == -1) perror("closedir");
@@ -173,7 +212,7 @@ int main(int argc, char **argv)
             }
             names.clear();
         }
-
+        
     }
     return 0;
 }
