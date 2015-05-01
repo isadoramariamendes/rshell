@@ -37,10 +37,10 @@ void printStr(char *c) {
     }
 }
 
-void changeColor(int background, int protec){
-    if(background == 1) cout <<"\x1b[47m";
-    if(S_ISDIR(protec)) cout <<"\x1b[34m";
-    else if(protec & S_IXUSR) cout <<"\x1b[32m";
+void changeColor(short background, int protec){
+    if(background == 1) cout << "\x1b[47m";
+    if(S_ISDIR(protec)) cout << "\x1b[34m";
+    else if(protec & S_IXUSR) cout << "\x1b[32m";
 }
 
 void resetColor(){
@@ -51,40 +51,37 @@ void print_aFlag(vector<string> &v) {
     for (unsigned i = 0; i < v.size(); ++i) {
         stat(v.at(i).c_str(), &s);
         int protec = s.st_mode;
-        
+        resetColor();
         if (v.at(i).find('.') == 0) {//axou ponto
             changeColor(1, protec);
             cout << v.at(i);
-            resetColor();
         }
         else {
             changeColor(0, protec);
             cout << v.at(i);
-            resetColor();
         }
         cout << " ";
     }
-    cout << endl;
+    
 }
 
 void print_alFlag(vector<string> &v) {
     for (unsigned i = 0; i < v.size(); ++i) {
         stat(v.at(i).c_str(), &s);
         int protec = s.st_mode;
+        resetColor();
         printPermissions(protec);
         printInformation(s);
-        
         if (v.at(i).find('.') == 0) {//axou ponto
             changeColor(1, protec);
             cout << v.at(i);
-            resetColor();
             
         }
         else {
             changeColor(0, protec);
             cout << v.at(i);
-            resetColor();
         }
+        resetColor();
         cout << endl;
     }
 }
@@ -104,7 +101,6 @@ int main(int argc, char **argv)
     }
     bool flag_a = false;
     bool flag_l = false;
-    bool flag_R = false;
     bool is_flag = false;
     bool is_dir = false;
     int dir_count = 0;
@@ -122,7 +118,6 @@ int main(int argc, char **argv)
             if (is_flag == true && is_dir == false) {
                 if(argv[i][j] == 'a') flag_a = true;
                 if(argv[i][j] == 'l') flag_l = true;
-                if(argv[i][j] == 'R') flag_R = true;
             }
         }
     }
@@ -131,30 +126,25 @@ int main(int argc, char **argv)
         ++dir_count;
     }
     //end of flags checking
-
+    
     vector <string> names;
     for (int k = 0; k < dir_count; ++k) {
         stat(argv[k], &s);
-        int protec = s.st_mode;
         
         DIR *dirp = opendir(argv[k]);
         if (dirp == NULL) { //is not dir
-            if (!flag_l) {
-                printStr(argv[k]);
-            }
-            else {
-                printPermissions(protec);
-                printInformation(s);
-                printStr(argv[k]);//print curr folder name
-            }
+            resetColor();
+            perror("opendir");
         }
         else {
-            if (dir_count > 1){
+                if (dir_count > 1){
+                resetColor();
                 printStr(argv[k]);//print folders name
                 cout << ":" << endl;
             }
             dirent *direntp;
             while ((direntp = readdir(dirp))) {
+                resetColor();
                 if (direntp == NULL) perror("readdir");
                 else {// creat list of content's name. it can be with hidden files or not
                     if (!flag_a) {
@@ -170,16 +160,19 @@ int main(int argc, char **argv)
                 }
             }
             if (!flag_l) { //flag a
+                resetColor();
                 print_aFlag(names);
+                resetColor();
             }
             else {// flag al or l, dependes on the contents of names
+                resetColor();
                 print_alFlag(names);
+                resetColor();
             }
             if (closedir(dirp) == -1) perror("closedir");
             cout << endl;
         }
         names.clear();
     }
-    
     return 0;
 }
