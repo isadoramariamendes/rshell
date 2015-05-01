@@ -38,7 +38,7 @@ By now this software do not use any external library.
 
 #Bugs/Limitations/Issues
 
-The -R label was not implemented, so any use of the label _R will be executed as it wasn't there.
+The -R label was not implemented, so any use of the label -R will be executed as it wasn't there.
 
 
 ______________________________________________________________________________________
