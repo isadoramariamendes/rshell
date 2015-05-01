@@ -68,7 +68,6 @@ void print_aFlag(vector<string> &v, vector<string> &n) {
             perror(string("There was an error with stat(" + v.at(i) + ")").c_str());
         }
         else {
-            resetColor();
             if (v.at(i).find('.') == 0) {//axou ponto
                 changeColor(1, s.st_mode);
                 cout << n.at(i);
@@ -77,6 +76,7 @@ void print_aFlag(vector<string> &v, vector<string> &n) {
                 changeColor(0, s.st_mode);
                 cout << n.at(i);
             }
+            resetColor();
             cout << " ";
         }
     }
