@@ -22,11 +22,11 @@ void printPermissions(int protec) {
 }
 
 void printInformation(struct stat s) {
-    cout << "   " << setw(10) << s.st_nlink;
+    cout << "   " << setw(5) << s.st_nlink;
     cout << "   " << setw(10) << s.st_uid;
     cout << "   " << setw(10) << s.st_gid;
     cout << "   " << setw(10) << s.st_size;
-    cout << "   " << setw(10) << s.st_mtime;
+    cout << "   " << setw(15) << s.st_mtime;
     cout << "   ";
 }
 
@@ -129,47 +129,51 @@ int main(int argc, char **argv)
     vector <string> names;
     for (int k = 0; k < dir_count; ++k) {
         struct stat s;
-        stat(argv[k], &s);
-        
-        DIR *dirp = opendir(argv[k]);
-        if (dirp == NULL) { //is not dir
-            resetColor();
-            perror("opendir");
+        if (stat(argv[k], &s) < 0) {
+            perror("stat");
         }
         else {
-            dirent *direntp;
-            resetColor();
-            printStr(argv[k]);//print folders name
-            cout << ":" << endl;
-            while ((direntp = readdir(dirp))) {
-                if (direntp == NULL) perror("readdir");
-                else {// creat list of content's name. it can be with hidden files or not
-                    if (!flag_a) {
-                        if (direntp->d_name[0]!='.') {
+            DIR *dirp = opendir(argv[k]);
+            if (dirp == NULL) { //is not dir
+                resetColor();
+                perror("opendir");
+            }
+            else {
+                dirent *direntp;
+                resetColor();
+                printStr(argv[k]);//print folders name
+                cout << ":" << endl;
+                while ((direntp = readdir(dirp))) {
+                    if (direntp == NULL) perror("readdir");
+                    else {// creat list of content's name. it can be with hidden files or not
+                        if (!flag_a) {
+                            if (direntp->d_name[0]!='.') {
+                                string curr_str(direntp->d_name);
+                                names.push_back(curr_str);
+                            }
+                        }
+                        else {
                             string curr_str(direntp->d_name);
                             names.push_back(curr_str);
                         }
                     }
-                    else {
-                        string curr_str(direntp->d_name);
-                        names.push_back(curr_str);
-                    }
                 }
+                if (!flag_l) { //flag a
+                    resetColor();
+                    print_aFlag(names);
+                    resetColor();
+                }
+                else {// flag al or l, dependes on the contents of names
+                    resetColor();
+                    print_alFlag(names);
+                    resetColor();
+                }
+                if (closedir(dirp) == -1) perror("closedir");
+                cout << endl;
             }
-            if (!flag_l) { //flag a
-                resetColor();
-                print_aFlag(names);
-                resetColor();
-            }
-            else {// flag al or l, dependes on the contents of names
-                resetColor();
-                print_alFlag(names);
-                resetColor();
-            }
-            if (closedir(dirp) == -1) perror("closedir");
-            cout << endl;
+            names.clear();
         }
-        names.clear();
+
     }
     return 0;
 }
