@@ -2,8 +2,7 @@ opt:= -Wall -Werror -ansi -pedantic
 compiler := g++
 objdir := bin
 
-all: bin ls
-
+all: bin rshell ls
 bin:
 	@test -d $(objdir) || mkdir $(objdir)
 rshell: 
@@ -12,4 +11,3 @@ ls:
 	@$(compiler) src/ls.cpp $(opt) -o ./bin/ls
 leak-check: all
 	@valgrind --leak-check=full ./bin/ls
-	
