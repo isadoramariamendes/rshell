@@ -8,18 +8,6 @@ using namespace std;
 
 struct stat s;
 
-void printStr(char *c) {
-    for (int i = 0; c[i] != '\0'; ++i) {
-        cout << c[i];
-    }
-}
-
-void printV(vector<string> &v) {
-    for (unsigned i = 0; i < v.size(); ++i) {
-        cout << v.at(i) << " ";
-    }
-}
-
 void printPermissions(int protec) {
     if (S_ISDIR(protec) != 0) cout << "d";
     else cout << "-";
@@ -43,11 +31,68 @@ void printInformation(struct stat s) {
     cout << "   ";
 }
 
+void printStr(char *c) {
+    for (int i = 0; c[i] != '\0'; ++i) {
+        cout << c[i];
+    }
+}
+
+void changeColor(int background, int protec){
+    if(background == 1) cout <<"\x1b[47m";
+    if(S_ISDIR(protec)) cout <<"\x1b[34m";
+    else if(protec & S_IXUSR) cout <<"\x1b[32m";
+}
+
+void resetColor(){
+    cout<<"\x1b[0m";
+}
+
+void print_aFlag(vector<string> &v) {
+    for (unsigned i = 0; i < v.size(); ++i) {
+        stat(v.at(i).c_str(), &s);
+        int protec = s.st_mode;
+        
+        if (v.at(i).find('.') == 0) {//axou ponto
+            changeColor(1, protec);
+            cout << v.at(i);
+            resetColor();
+        }
+        else {
+            changeColor(0, protec);
+            cout << v.at(i);
+            resetColor();
+        }
+        cout << " ";
+    }
+    cout << endl;
+}
+
+void print_alFlag(vector<string> &v) {
+    for (unsigned i = 0; i < v.size(); ++i) {
+        stat(v.at(i).c_str(), &s);
+        int protec = s.st_mode;
+        printPermissions(protec);
+        printInformation(s);
+        
+        if (v.at(i).find('.') == 0) {//axou ponto
+            changeColor(1, protec);
+            cout << v.at(i);
+            resetColor();
+            
+        }
+        else {
+            changeColor(0, protec);
+            cout << v.at(i);
+            resetColor();
+        }
+        cout << endl;
+    }
+}
+
 int main(int argc, char **argv)
 {
+    //beggining of flags checking
     char dir[] = ".";
-    vector <string> names;
-
     if (argc == 1) {
         argv[0] = dir;
     }
@@ -85,32 +130,33 @@ int main(int argc, char **argv)
         argv[0] = dir;
         ++dir_count;
     }
-    
+    //end of flags checking
+
+    vector <string> names;
     for (int k = 0; k < dir_count; ++k) {
-        DIR *dirp1 = opendir(argv[k]);
-        if (dirp1 == NULL) {
+        stat(argv[k], &s);
+        int protec = s.st_mode;
+        
+        DIR *dirp = opendir(argv[k]);
+        if (dirp == NULL) { //is not dir
             if (!flag_l) {
                 printStr(argv[k]);
             }
             else {
-                stat(argv[k], &s);
-                int protec = s.st_mode;
                 printPermissions(protec);
                 printInformation(s);
-                printStr(argv[k]);
-                cout << endl;
+                printStr(argv[k]);//print curr folder name
             }
         }
         else {
             if (dir_count > 1){
-                cout << endl;
-                printStr(argv[k]);
+                printStr(argv[k]);//print folders name
                 cout << ":" << endl;
             }
             dirent *direntp;
-            while ((direntp = readdir(dirp1))) {
+            while ((direntp = readdir(dirp))) {
                 if (direntp == NULL) perror("readdir");
-                else {
+                else {// creat list of content's name. it can be with hidden files or not
                     if (!flag_a) {
                         if (direntp->d_name[0]!='.') {
                             string curr_str(direntp->d_name);
@@ -123,22 +169,17 @@ int main(int argc, char **argv)
                     }
                 }
             }
-            if (!flag_l) {
-                printV(names);
+            if (!flag_l) { //flag a
+                print_aFlag(names);
             }
-            else {
-                for (unsigned l = 0; l < names.size(); ++l) {
-                    stat(names.at(l).c_str(), &s);
-                    int protec = s.st_mode;
-                    printPermissions(protec);
-                    printInformation(s);
-                    cout << names.at(l) << endl;
-                }
+            else {// flag al or l, dependes on the contents of names
+                print_alFlag(names);
             }
-            if (closedir(dirp1) == -1) perror("closedir");
+            if (closedir(dirp) == -1) perror("closedir");
             cout << endl;
         }
         names.clear();
     }
+    
     return 0;
 }
