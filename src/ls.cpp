@@ -46,6 +46,21 @@ void resetColor(){
     cout<<"\x1b[0m";
 }
 
+void print_time(vector<string> &v) {
+    int total = 0;
+    for (unsigned i = 0; i < v.size(); ++i) {
+        struct stat s;
+        if (stat(v.at(i).c_str(), &s) == -1) {
+            perror(string("There was an error with stat(" + v.at(i) + ")").c_str());
+        }
+        else {
+            total += s.st_blocks*512;
+        }
+    }
+    total = total != 0 ? total / 512: 0;
+    cout << "total " << total <<endl;
+}
+
 void print_aFlag(vector<string> &v, vector<string> &n) {
     for (unsigned i = 0; i < v.size(); ++i) {
         struct stat s;
@@ -141,12 +156,15 @@ int main(int argc, char **argv)
         struct stat s;
         if (stat(argv[k], &s) < 0) {
             perror("stat");
+            cout << endl;
         }
         else {
             DIR *dirp = opendir(argv[k]);
             if (dirp == NULL) { //is not dir
                 resetColor();
                 perror("opendir");
+                cout << endl;
+
             }
             else {
                 dirent *direntp;
@@ -157,7 +175,10 @@ int main(int argc, char **argv)
                 }
                 //creates list of name of files
                 while ((direntp = readdir(dirp))) {
-                    if (direntp == NULL) perror("readdir");
+                    if (direntp == NULL) {
+                        perror("readdir");
+                        cout << endl;
+                    }
                     else {
 
                         if (strcmp(argv[k], ".") == 0) {
@@ -204,6 +225,7 @@ int main(int argc, char **argv)
                 }
                 else {// flag al or l, dependes on the contents of "names"
                     resetColor();
+                    print_time(dirs);
                     print_alFlag(dirs, names);
                     resetColor();
                 }
@@ -211,6 +233,7 @@ int main(int argc, char **argv)
                 cout << endl;
             }
             names.clear();
+            dirs.clear();
         }
         
     }
