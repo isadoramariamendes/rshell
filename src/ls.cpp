@@ -138,8 +138,10 @@ int main(int argc, char **argv)
         }
         else {
             dirent *direntp;
+            resetColor();
+            printStr(argv[k]);//print folders name
+            cout << ":" << endl;
             while ((direntp = readdir(dirp))) {
-                resetColor();
                 if (direntp == NULL) perror("readdir");
                 else {// creat list of content's name. it can be with hidden files or not
                     if (!flag_a) {
