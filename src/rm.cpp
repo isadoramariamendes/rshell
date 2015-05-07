@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <list>
 #include <dirent.h>
+#include <stdlib.h>
 using namespace std;
 
 void recRM(char *pathname) {
@@ -46,12 +47,12 @@ void recRM(char *pathname) {
         }
     }
 
-    for(auto i = dirs.begin(); i != dirs.end(); ++i) {
+    for(std::list<string>::iterator i = dirs.begin(); i != dirs.end(); ++i) {
         string dirPath = spath + "/" + (*i);
         recRM((char*) dirPath.c_str());
     }
 
-    for(auto i = dirs.begin(); i != dirs.end(); ++i) {
+    for(std::list<string>::iterator i = dirs.begin(); i != dirs.end(); ++i) {
         string dirPath = spath + "/" + (*i);
         rmdir((char*) dirPath.c_str());
     }
