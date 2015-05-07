@@ -42,7 +42,6 @@ int main (int argc, char *argv[]) {
     else {
         if (!exist(argv[2])) {
             //rename argv[1] to argv[2]
-<<<<<<< HEAD
             if (link(argv[1], argv[2]) == -1) {
                 perror("link");
             }
@@ -51,11 +50,8 @@ int main (int argc, char *argv[]) {
                 perror("unlink");
                 }
             }
-            
-=======
             link(argv[1], argv[2]);
             unlink(argv[1]);
->>>>>>> pr/11
         }
         else {
             if (isFolder(argv[2])) {
@@ -63,7 +59,6 @@ int main (int argc, char *argv[]) {
                 //link and unlink
                 //it will be in folder/file
                 string newpath  = string(argv[2]) + "/" + string(argv[1]);
-<<<<<<< HEAD
                 if (link(argv[1],newpath.c_str()) == -1) {
                     perror("link");
                 }
@@ -72,10 +67,8 @@ int main (int argc, char *argv[]) {
                         perror("unlink");
                     }
                 }
-=======
                 link(argv[1],newpath.c_str());
                 unlink(argv[1]);
->>>>>>> pr/11
             }
             else {
                 cerr << "ERROR: Destination \"" << argv[2] << "\" is not a directory." << endl;
