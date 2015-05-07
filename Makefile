@@ -1,5 +1,5 @@
-opt:= -Wall -Werror -ansi -pedantic
-compiler := g++
+opt:=  -Wall -Werror -ansi -pedantic
+compiler := g++ -std=c++11
 objdir := bin
 
 all: bin rshell ls cp rm mv
