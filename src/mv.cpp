@@ -50,6 +50,8 @@ int main (int argc, char *argv[]) {
                 perror("unlink");
                 }
             }
+            link(argv[1], argv[2]);
+            unlink(argv[1]);
         }
         else {
             if (isFolder(argv[2])) {
@@ -65,6 +67,8 @@ int main (int argc, char *argv[]) {
                         perror("unlink");
                     }
                 }
+                link(argv[1],newpath.c_str());
+                unlink(argv[1]);
             }
             else {
                 cerr << "ERROR: Destination \"" << argv[2] << "\" is not a directory." << endl;
