@@ -20,9 +20,14 @@ int words = 0;
 void userInfo() {
     char machine[100];
     struct passwd *password = getpwuid(getuid());
-    int hostname = gethostname(machine, 100);
-    
-    if(password != NULL && hostname != -1) {
+    if (password == NULL) {
+        perror("getpwuid");
+    }
+    int hostname = gethostname(machine, 64);
+    if (hostname == -1) {
+        perror("gethostname");
+    }
+    if (password != NULL && hostname != -1) {
         string username = password->pw_name;
         cout << username << "@" << machine << " ";
     }
