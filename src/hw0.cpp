@@ -21,7 +21,16 @@ using namespace std;
 vector<int> conn_order;
 int words = 0;
 static int *flag;
+unsigned long sizeSpaceCmd = 0;
+unsigned long sizeCommands = 0;
+unsigned long sizeTmp = 0;
+unsigned long sizeList = 0;
 
+void freeList(char **StringList, unsigned long size) {
+    for (int i = 0 ; i < size ; i++)
+        delete[] StringList[i] ;
+    delete[] StringList ;
+}
 
 /*
  *  POSTCONDITION: Prints the username and hostname, if possible.
@@ -50,10 +59,10 @@ void userInfo() {
  */
 char *getCommands() {
     string commandLine;
-    
     getline(cin, commandLine);
     if (commandLine == "exit") exit(0);
-    char *commands = new char [commandLine.size() + 1];
+    sizeCommands = commandLine.size() + 1;
+    char *commands = new char [sizeCommands];
     strcpy(commands, commandLine.c_str());
     
     return commands;
@@ -144,7 +153,8 @@ bool isExit(char *c) {
 void tok_space (char **cmdlist, int size) {
     int curr = 0;
     unsigned index = 0;
-    char **temp = new char *[size + 1];
+    sizeTmp = size + 1;
+    char **temp = new char *[sizeTmp];
     
     while (curr != size) {
         int argc = 0;
@@ -189,6 +199,7 @@ void tok_space (char **cmdlist, int size) {
             ++curr;
         }
     }
+    freeList(temp, sizeTmp);
 }
 
 char *addSpaces(char *cmd) {
@@ -223,17 +234,19 @@ char *addSpaces(char *cmd) {
         }
     }
     
-    char *spaceCmd = new char[line.length() + 1];
+    sizeSpaceCmd = line.length() + 1;
+    char *spaceCmd = new char[sizeSpaceCmd];
     strcpy(spaceCmd,line.c_str());
     
     return spaceCmd;
 }
 
-void execute (char *cmd) {
+void execute (char *cmd, char **c) {
     read_order(cmd);
-    char **cmdlist = new char *[cmdSize(cmd) + 1];
-    int list_size = tok_conn(cmdlist, cmd);
-    tok_space(cmdlist, list_size);
+    sizeList = strlen(cmd) + 1;
+    c = new char *[sizeList];
+    int list_size = tok_conn(c, cmd);
+    tok_space(c, list_size);
 }
 
 //function recieves commands and arguments before '>' and file to be output
@@ -582,26 +595,31 @@ int checkProcedure(char *str[], int size) {
     return 0;
 }
 
+
+
 int main()
 {
+    char **cmdlist = 0;
+    char *cmdSpaced = 0;
+    char *cmd = 0;
     while(1) {
         
         userInfo();
-        char *cmd = getCommands();
+        cmd = getCommands();
         
         if (!isComment(cmd)) {
             tok_comment(cmd);
             if (memcmp(cmd, "exit", 4) == 0) exit(0);
             //cout << cmd << " Cmd" << endl;
             
-            char *cmdSpaced = addSpaces(cmd); //copy with spaces when occur appearence of | or < >
+            cmdSpaced = addSpaces(cmd); //copy with spaces when occur appearence of | or < >
             //cout << cmdSpaced << " CmdSpaced" << endl;
             int index = 0;
-            char *str[512];
+            char *str[strlen(cmd)]; //this allocates much more memory than needed, but works without the risk of segfault and is easy
             char *pch = strtok(cmdSpaced, " ");
             while (pch != NULL) {
                 str[index] = pch;
-                cout << str[index] << " index: " << index << endl;
+                //cout << str[index] << " index: " << index << endl;
                 pch = strtok(NULL, " ");
                 index++;
             }
@@ -620,11 +638,15 @@ int main()
                 redirect(str, index);
             }
             else {
-                execute(cmd);
+                execute(cmd, cmdlist);
                 //cout << " CMD NORMAL" << endl;
             }
         }
         conn_order.clear();
+        freeList(cmdlist, sizeList);
+        free(cmdSpaced);
+        free(cmd);
+
     }
     return 0;
 }
