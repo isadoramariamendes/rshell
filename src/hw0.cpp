@@ -14,6 +14,10 @@
 #include <fcntl.h>
 using namespace std;
 
+#ifndef MAP_ANONYMOUS
+#define MAP_ANONYMOUS MAP_ANON //in mac is MAP_ANON
+#endif
+
 vector<int> conn_order;
 int words = 0;
 static int *flag;
@@ -604,8 +608,7 @@ int main()
             str[index] = NULL;
             
             //create a shared memory to be accessed from child and process
-            //flag = (int*)mmap(NULL, sizeof *flag, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0); in mac is MAP_ANON
-            flag = (int*)mmap(NULL, sizeof *flag, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, -1, 0);
+            flag = (int*)mmap(NULL, sizeof *flag, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
             
             int pos = checkpipe(str, index);
             if (pos != -1) {
