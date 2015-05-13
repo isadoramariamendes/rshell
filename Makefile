@@ -1,5 +1,5 @@
 opt:=  -Wall -Werror -ansi -pedantic
-compiler := g++ -std=c++11
+compiler := g++
 objdir := bin
 
 all: bin rshell ls cp rm mv
@@ -16,5 +16,5 @@ rm:
 mv:
 	@$(compiler) src/mv.cpp $(opt) -o ./bin/mv
 leak-check: all
-	@valgrind --leak-check=full ./bin/ls
+	@valgrind --leak-check=full ./bin/rshell
 
