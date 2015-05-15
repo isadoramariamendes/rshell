@@ -27,9 +27,14 @@ unsigned long sizeTmp = 0;
 unsigned long sizeList = 0;
 
 void freeList(char **StringList, unsigned long size) {
-    for (int i = 0 ; i < size ; i++)
-        delete[] StringList[i] ;
-    delete[] StringList ;
+    if (StringList != NULL) {
+        for (int i = 0 ; i < size ; i++) {
+            if (StringList[i] != NULL) {
+                delete[] StringList[i] ;
+            }
+        }
+        delete[] StringList ;
+    }
 }
 
 /*
@@ -199,7 +204,7 @@ void tok_space (char **cmdlist, int size) {
             ++curr;
         }
     }
-    freeList(temp, sizeTmp);
+    //freeList(temp, sizeTmp);
 }
 
 char *addSpaces(char *cmd) {
@@ -241,12 +246,10 @@ char *addSpaces(char *cmd) {
     return spaceCmd;
 }
 
-void execute (char *cmd, char **c) {
+void execute (char *cmd, char **cmdlist) {
     read_order(cmd);
-    sizeList = strlen(cmd) + 1;
-    c = new char *[sizeList];
-    int list_size = tok_conn(c, cmd);
-    tok_space(c, list_size);
+    int list_size = tok_conn(cmdlist, cmd);
+    tok_space(cmdlist, list_size);
 }
 
 //function recieves commands and arguments before '>' and file to be output
@@ -343,7 +346,7 @@ void in_redirect2(char * cpystr[], int pos, char * str[], int size) {
 }
 
 //working
-int checkpipe(char *str[], int size) {
+int search_pipe(char *str[], int size) {
     for (int i = 0; i < size; i++) {
         if (memcmp(str[i], "|\0", 2) == 0) {
             //cout << str[i] << " Pipe found in: " << i << endl;
@@ -353,7 +356,7 @@ int checkpipe(char *str[], int size) {
     return -1;
 }
 
-int checkless(char *str[], int size) {
+int search_lessthanSign(char *str[], int size) {
     for (int i=0; i<size; i++) {
         if (memcmp(str[i], "<\0", 2) == 0) {
             return i;
@@ -361,71 +364,58 @@ int checkless(char *str[], int size) {
     }
     return -1;
 }
+
 void redirect(char * str[], int size) {
     int i, j;
-    char * cpystr[512];
+    char *cpystr[512];
     
     for (i = 0;i < size; i++) {
-        if (*flag != 14)
+        if (*flag != -1)
             *flag = 0;
         int aux = 0;
         for (j = i; j < size; j++) {
             if (memcmp(str[j], "<\0", 2) == 0) {
-                *flag = 6;
+                *flag = 1;
                 //cout << "Flag :" << *flag << endl;
                 i = j;
                 break;
             }
-            if (memcmp(str[j], ">\0", 2) == 0) {
-                *flag = 7;
+            if ((memcmp(str[j], ">\0", 2) == 0) || (memcmp(str[j], "1>\0", 3) == 0)) {
+                *flag = 2;
                 //cout << "Flag :" << *flag << endl;
                 i = j;
                 break;
             }
-            if (memcmp(str[j], ">>\0", 3) == 0) {
-                *flag = 8;
+            if ((memcmp(str[j], ">>\0", 3) == 0) || (memcmp(str[j], "1>>\0", 4) == 0)) {
+                *flag = 3;
                 //cout << "Flag :" << *flag << endl;
                 i = j;
                 break;
             }
             if (memcmp(str[j], "|\0", 2) == 0) {
-                *flag = 9;
-                //cout << "Flag :" << *flag << endl;
                 i = j;
                 break;
             }
             if (memcmp(str[j], "<<<\0", 4) == 0) {
-                *flag = 10;
+                *flag = 4;
                 //cout << "Flag :" << *flag << endl;
                 i = j;
                 break;
             }
             if (memcmp(str[j], "2>\0", 3) == 0) {
-                *flag = 11;
+                *flag = 5;
                 cout << "Flag :" << *flag << endl;
                 i = j;
                 break;
             }
             if (memcmp(str[j], "2>>\0", 4) == 0) {
-                *flag = 12;
+                *flag = 6;
                 cout << "Flag :" << *flag << endl;
                 i = j;
                 break;
             }
-            if (memcmp(str[j], "1>\0", 3) == 0) {
-                *flag = 7;
-                //cout << "Flag :" << *flag << endl;
-                i = j;
-                break;
-            }
-            if (memcmp(str[j], "1>>\0", 4) == 0) {
-                *flag = 8;
-                //cout << "Flag :" << *flag << endl;
-                i = j;
-                break;
-            }
             if (memcmp(str[j], "0>", 2) == 0) {
-                *flag = 13;
+                *flag = 7;
                 //cout << "Flag :" << *flag << endl;
                 i = j;
                 break;
@@ -444,18 +434,18 @@ void redirect(char * str[], int size) {
             exit(1);
         }
         else if (pid == 0) {
-            if (*flag == 6)in_redirect(cpystr, str[j+1]);
-            else if (*flag == 7)out_redirect(cpystr, str[j+1], false, 1);
-            else if (*flag == 8)out_redirect(cpystr, str[j+1], true, 1);
-            else if (*flag == 14) {
+            if (*flag == 1)in_redirect(cpystr, str[j+1]);
+            else if (*flag == 2)out_redirect(cpystr, str[j+1], false, 1);
+            else if (*flag == 3)out_redirect(cpystr, str[j+1], true, 1);
+            else if (*flag == -1) {
                 if (execvp(cpystr[0], cpystr) == -1) {
                     perror("execvp");
                 }
             }
-            else if (*flag == 10) in_redirect2(cpystr, i, str, size);
-            else if (*flag == 11) out_redirect(cpystr, str[j+1],false, 2);
-            else if (*flag == 12) out_redirect(cpystr, str[j+1],true, 2);
-            else if (*flag == 13) out_redirect(cpystr, str[j+1],true, 0);
+            else if (*flag == 4) in_redirect2(cpystr, i, str, size);
+            else if (*flag == 5) out_redirect(cpystr, str[j+1], false, 2);
+            else if (*flag == 6) out_redirect(cpystr, str[j+1], true, 2);
+            else if (*flag == 7) out_redirect(cpystr, str[j+1], true, 0);
             exit(1);
         }
         else if (pid > 0) {
@@ -483,17 +473,17 @@ void piping(int index, int size, char *str[]) {
         cpystr[i] = str[i];
         end = i;
     }
-    cpystr[end+1] = (char *)'\0';
+    cpystr[end + 1] = (char *)'\0';
     
     //add what ever is after the first | to string
-    for (int i = index+1; i < size; i++) {
+    for (int i = index + 1; i < size; i++) {
         restof_str[restof_size] = str[i];
         restof_size++;
     }
-    restof_str[restof_size+1] = (char*)'\0';
+    restof_str[restof_size + 1] = (char*)'\0';
     
     int fd[2];
-    if (pipe(fd)==-1) {
+    if (pipe(fd) == -1) {
         perror ("pipe");
         exit(1);
     }
@@ -514,7 +504,7 @@ void piping(int index, int size, char *str[]) {
             perror("dup");
         }
         
-        int check = checkless(cpystr, end);
+        int check = search_lessthanSign(cpystr, end);
         if (check == -1) {
             if (-1 == execvp(cpystr[0], cpystr)) {
                 perror("execvp");
@@ -545,7 +535,7 @@ void piping(int index, int size, char *str[]) {
             perror("Wait failed");
         }
         //look for + pipe
-        int chain = checkpipe(restof_str, restof_size);
+        int chain = search_pipe(restof_str, restof_size);
         if (chain != -1) {
             //execute next pipe command
             piping(chain, restof_size, restof_str);
@@ -615,38 +605,36 @@ int main()
             cmdSpaced = addSpaces(cmd); //copy with spaces when occur appearence of | or < >
             //cout << cmdSpaced << " CmdSpaced" << endl;
             int index = 0;
-            char *str[strlen(cmd)]; //this allocates much more memory than needed, but works without the risk of segfault and is easy
+            cmdlist = new char *[strlen(cmdSpaced)]; //this allocates much more memory than needed, but works without the risk of segfault and is easy
             char *pch = strtok(cmdSpaced, " ");
             while (pch != NULL) {
-                str[index] = pch;
+                cmdlist[index] = pch;
                 //cout << str[index] << " index: " << index << endl;
                 pch = strtok(NULL, " ");
                 index++;
             }
-            str[index] = NULL;
+            cmdlist[index] = NULL;
             
             //create a shared memory to be accessed from child and process
             flag = (int*)mmap(NULL, sizeof *flag, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
             
-            int pos = checkpipe(str, index);
+            int pos = search_pipe(cmdlist, index);
             if (pos != -1) {
-                //cout << "POS == -1" << endl;
-                piping(pos, index, str);
+                //cout << "PIPE" << endl;
+                piping(pos, index, cmdlist);
             }
-            else if (checkProcedure(str, index)){
+            else if (checkProcedure(cmdlist, index)){
                 //cout << "CHECKPROCEDURE" << endl;
-                redirect(str, index);
+                redirect(cmdlist, index);
             }
             else {
                 execute(cmd, cmdlist);
-                //cout << " CMD NORMAL" << endl;
+                //cout << "EXEC" << endl;
             }
         }
         conn_order.clear();
-        freeList(cmdlist, sizeList);
-        free(cmdSpaced);
-        free(cmd);
-
+        //free
+        
     }
     return 0;
 }
