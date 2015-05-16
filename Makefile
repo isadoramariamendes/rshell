@@ -16,5 +16,5 @@ rm:
 mv:
 	@$(compiler) src/mv.cpp $(opt) -o ./bin/mv
 leak-check: all
-	@valgrind --leak-check=full ./bin/rshell
+	@valgrind --leak-check=full --show-reachable=yes  ./bin/rshell 
 

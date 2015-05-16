@@ -1,0 +1,156 @@
+Script started on Sat 16 May 2015 01:04:58 AM PDT
+~
+imend009@hammer $ pwd
+/home/csmajs/imend009
+~
+imend009@hammer $ cd rshell
+~/rshell
+imend009@hammer $ ls
+[0m[38;5;27mbin[0m/  errors.cpp  LICENSE  Makefile  mf  piping.script  README.md  [38;5;27msrc[0m/  [38;5;27mtests[0m/
+[m~/rshell
+imend009@hammer $ ./bo[Kin/t[Krshell
+
+imend009@hammer.cs.ucr.edu $ ls -l > lsl_file #output redirection kind 1
+
+imend009@hammer.cs.ucr.edu $ cat < lsl_file #input redirection
+total 32
+drwx------ 2 imend009 csmajs 4096 May 16 00:50 bin
+-rw------- 1 imend009 csmajs   58 May 16 00:20 errors.cpp
+-rw------- 1 imend009 csmajs 1483 May 15 23:28 LICENSE
+-rw------- 1 imend009 csmajs    0 May 16 00:58 lsl_file
+-rw------- 1 imend009 csmajs  475 May 15 23:34 Makefile
+-rw------- 1 imend009 csmajs  122 May 16 00:50 mf
+-rw------- 1 imend009 csmajs    0 May 16 00:58 piping.script
+-rw------- 1 imend009 csmajs 4257 May 15 23:28 README.md
+drwx------ 2 imend009 csmajs 4096 May 16 00:23 src
+drwx------ 2 imend009 csmajs 4096 May 15 23:28 tests
+
+imend009@hammer.cs.ucr.edu $ ls -a >> lsa_file #output redirection kind 2
+
+imend009@hammer.cs.ucr.edu $ cat < lsl_file #input redirection
+total 32
+drwx------ 2 imend009 csmajs 4096 May 16 00:50 bin
+-rw------- 1 imend009 csmajs   58 May 16 00:20 errors.cpp
+-rw------- 1 imend009 csmajs 1483 May 15 23:28 LICENSE
+-rw------- 1 imend009 csmajs    0 May 16 00:58 lsl_file
+-rw------- 1 imend009 csmajs  475 May 15 23:34 Makefile
+-rw------- 1 imend009 csmajs  122 May 16 00:50 mf
+-rw------- 1 imend009 csmajs    0 May 16 00:58 piping.script
+-rw------- 1 imend009 csmajs 4257 May 15 23:28 README.md
+drwx------ 2 imend009 csmajs 4096 May 16 00:23 src
+drwx------ 2 imend009 csmajs 4096 May 15 23:28 tests
+
+imend009@hammer.cs.ucr.edu $ ls -l | tr ‘a-z’ ‘A-Z’ | tee f | cat #multiple piping
+
+imend009@hammer.cs.ucr.edu $ cat < f #input redirection
+TOTAL 40
+DRWX------ 2 IMEND009 CSMAJS 4096 MAY 16 00:50 BIN
+-RW------- 1 IMEND009 CSMAJS   58 MAY 16 00:20 ERRORS.CPP
+-RW------- 1 IMEND009 CSMAJS 1483 MAY 15 23:28 LICENSE
+-RW------- 1 IMEND009 CSMAJS   97 MAY 16 00:59 LSA_FILE
+-RW------- 1 IMEND009 CSMAJS  557 MAY 16 00:58 LSL_FILE
+-RW------- 1 IMEND009 CSMAJS  475 MAY 15 23:34 MAKEFILE
+-RW------- 1 IMEND009 CSMAJS  122 MAY 16 00:50 MF
+-RW------- 1 IMEND009 CSMAJS    0 MAY 16 00:58 PIPING.SCRIPT
+-RW------- 1 IMEND009 CSMAJS 4257 MAY 15 23:28 README.MD
+DRWX------ 2 IMEND009 CSMAJS 4096 MAY 16 00:23 SRC
+DRWX------ 2 IMEND009 CSMAJS 4096 MAY 15 23:28 TESTS
+
+imend009@hammer.cs.ucr.edu $ #input redirection, output redirection and piping all together
+
+imend009@hammer.cs.ucr.edu $ cat < mf | tr A-Z a-z | tee newOutputFile1 | tr a-z A-Z > newOutputFile2
+
+imend009@hammer.cs.ucr.edu $ cat < mf
+
+
+is is my test file. Here there are UPPERCASE text and LOWERCASE text.
+IsADoRa MaRiA mEndEs De SoUzA is a GREAT student.
+
+imend009@hammer.cs.ucr.edu $ cat < newOutputFile1
+
+
+is is my test file. here there are uppercase text and lowercase text.
+isadora maria mendes de souza is a great student.
+
+imend009@hammer.cs.ucr.edu $ cat < newOutputFile2
+
+
+IS IS MY TEST FILE. HERE THERE ARE UPPERCASE TEXT AND LOWERCASE TEXT.
+ISADORA MARIA MENDES DE SOUZA IS A GREAT STUDENT.
+
+imend009@hammer.cs.ucr.edu $ cat <mf | tr A-Z a-z| tee newOutputFile3| tr a-z A-Z>  newOutputFile4#multiple spaces
+
+imend009@hammer.cs.ucr.edu $ cat < newOutputFile3
+
+
+is is my test file. here there are uppercase text and lowercase text.
+isadora maria mendes de souza is a great student.
+
+imend009@hammer.cs.ucr.edu $ cat < newOutputFile4
+
+
+IS IS MY TEST FILE. HERE THERE ARE UPPERCASE TEXT AND LOWERCASE TEXT.
+ISADORA MARIA MENDES DE SOUZA IS A GREAT STUDENT.
+
+imend009@hammer.cs.ucr.edu $ cat<mf|tr A-Z a-z|tee newOutputFile5|tr a-z A-Z>newOutputFile6#no spaces
+
+imend009@hammer.cs.ucr.edu $ cat < newOutputFile5
+
+
+is is my test file. here there are uppercase text and lowercase text.
+isadora maria mendes de souza is a great student.
+
+imend009@hammer.cs.ucr.edu $ cat < newOutputFile6
+
+
+IS IS MY TEST FILE. HERE THERE ARE UPPERCASE TEXT AND LOWERCASE TEXT.
+ISADORA MARIA MENDES DE SOUZA IS A GREAT STUDENT.
+
+imend009@hammer.cs.ucr.edu $ #extra credit 1
+
+imend009@hammer.cs.ucr.edu $ echo extra credit rocks | cat
+
+imend009@hammer.cs.ucr.edu $ cat <<< "extra credit rocks”
+extra credit rocks� 
+
+imend009@hammer.cs.ucr.edu $ cat <<< "extra credit rocks"
+extra credit rocks 
+
+imend009@hammer.cs.ucr.edu $ #the first got wrong because I used ” instead of ' ", sorry
+
+imend009@hammer.cs.ucr.edu $ #extra credit 1
+
+imend009@hammer.cs.ucr.edu $ echo extra credit rocks | cat
+
+imend009@hammer.cs.ucr.edu $ cat <<< "extra credit rocks"
+extra credit rocks 
+
+imend009@hammer.cs.ucr.edu $ #extra credit 2
+
+imend009@hammer.cs.ucr.edu $ cat < errors
+open: No such file or directory
+
+imend009@hammer.cs.ucr.edu $ g++ error.cpp 2> errors1
+
+imend009@hammer.cs.ucr.edu $ cat < errors1
+g++: error.cpp: No such file or directory
+g++: no input files
+
+imend009@hammer.cs.ucr.edu $ g++ error.cpp 2>> errors2
+
+imend009@hammer.cs.ucr.edu $ cat < errors2
+g++: error.cpp: No such file or directory
+g++: no input files
+
+imend009@hammer.cs.ucr.edu $ g++ error.cpp 0> errors2
+g++: error.cpp: No such file or directory
+g++: no input files
+
+imend009@hammer.cs.ucr.edu $ #I hope this is enough. Thanks!!!
+
+imend009@hammer.cs.ucr.edu $ exit
+~/rshell
+imend009@hammer $ exit
+exit
+
+Script done on Sat 16 May 2015 01:08:43 AM PDT

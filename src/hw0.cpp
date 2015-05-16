@@ -21,14 +21,14 @@ using namespace std;
 vector<int> conn_order;
 int words = 0;
 static int *flag;
-unsigned long sizeSpaceCmd = 0;
-unsigned long sizeCommands = 0;
-unsigned long sizeTmp = 0;
-unsigned long sizeList = 0;
+int sizeSpaceCmd = 0;
+int sizeCommands = 0;
+int sizeTmp = 0;
+int sizeList = 0;
 
 void freeList(char **StringList, unsigned long size) {
     if (StringList != NULL) {
-        for (int i = 0 ; i < size ; i++) {
+        for (unsigned long i = 0 ; i < size ; i++) {
             if (StringList[i] != NULL) {
                 delete[] StringList[i] ;
             }
@@ -65,8 +65,9 @@ void userInfo() {
 char *getCommands() {
     string commandLine;
     getline(cin, commandLine);
+    commandLine += '\0';
     if (commandLine == "exit") exit(0);
-    sizeCommands = commandLine.size() + 1;
+    sizeCommands = (int)commandLine.size();
     char *commands = new char [sizeCommands];
     strcpy(commands, commandLine.c_str());
     
@@ -204,6 +205,7 @@ void tok_space (char **cmdlist, int size) {
             ++curr;
         }
     }
+    delete []temp;
 }
 
 char *addSpaces(char *cmd) {
@@ -403,13 +405,13 @@ void redirect(char * str[], int size) {
             }
             if (memcmp(str[j], "2>\0", 3) == 0) {
                 *flag = 5;
-                cout << "Flag :" << *flag << endl;
+                //cout << "Flag :" << *flag << endl;
                 i = j;
                 break;
             }
             if (memcmp(str[j], "2>>\0", 4) == 0) {
                 *flag = 6;
-                cout << "Flag :" << *flag << endl;
+                //cout << "Flag :" << *flag << endl;
                 i = j;
                 break;
             }
