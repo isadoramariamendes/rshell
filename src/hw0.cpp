@@ -41,7 +41,7 @@ void freeList(char **StringList, unsigned long size) {
  *  POSTCONDITION: Prints the username and hostname, if possible.
  */
 void userInfo() {
-    char machine[100];
+    char machine[64];
     cout << endl;
     struct passwd *password = getpwuid(getuid());
     if (password == NULL) {
@@ -204,7 +204,6 @@ void tok_space (char **cmdlist, int size) {
             ++curr;
         }
     }
-    //freeList(temp, sizeTmp);
 }
 
 char *addSpaces(char *cmd) {
@@ -620,7 +619,7 @@ int main()
             
             int pos = search_pipe(cmdlist, index);
             if (pos != -1) {
-                //cout << "PIPE" << endl;
+                //cout << "POS == -1" << endl;
                 piping(pos, index, cmdlist);
             }
             else if (checkProcedure(cmdlist, index)){
@@ -629,8 +628,10 @@ int main()
             }
             else {
                 execute(cmd, cmdlist);
-                //cout << "EXEC" << endl;
+                //cout << " CMD NORMAL" << endl;
             }
+            delete [] cmd;
+            delete [] cmdSpaced;
         }
         conn_order.clear();
         //free
