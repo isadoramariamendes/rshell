@@ -17,7 +17,3 @@ mv:
 	@$(compiler) src/mv.cpp $(opt) -o ./bin/mv
 leak-check: all
 	@valgrind --leak-check=full --show-reachable=yes  ./bin/rshell 
-<<<<<<< HEAD
-
-=======
->>>>>>> master
