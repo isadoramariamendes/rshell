@@ -586,7 +586,244 @@ int checkProcedure(char *str[], int size) {
     return 0;
 }
 
+//working
+int search_pipe(char *str[], int size) {
+    for (int i = 0; i < size; i++) {
+        if (memcmp(str[i], "|\0", 2) == 0) {
+            //cout << str[i] << " Pipe found in: " << i << endl;
+            return i;
+        }
+    }
+    return -1;
+}
 
+int search_lessthanSign(char *str[], int size) {
+    for (int i=0; i<size; i++) {
+        if (memcmp(str[i], "<\0", 2) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void redirect(char * str[], int size) {
+    int i, j;
+    char *cpystr[512];
+    
+    for (i = 0;i < size; i++) {
+        if (*flag != -1)
+            *flag = 0;
+        int aux = 0;
+        for (j = i; j < size; j++) {
+            if (memcmp(str[j], "<\0", 2) == 0) {
+                *flag = 1;
+                //cout << "Flag :" << *flag << endl;
+                i = j;
+                break;
+            }
+            if ((memcmp(str[j], ">\0", 2) == 0) || (memcmp(str[j], "1>\0", 3) == 0)) {
+                *flag = 2;
+                //cout << "Flag :" << *flag << endl;
+                i = j;
+                break;
+            }
+            if ((memcmp(str[j], ">>\0", 3) == 0) || (memcmp(str[j], "1>>\0", 4) == 0)) {
+                *flag = 3;
+                //cout << "Flag :" << *flag << endl;
+                i = j;
+                break;
+            }
+            if (memcmp(str[j], "|\0", 2) == 0) {
+                i = j;
+                break;
+            }
+            if (memcmp(str[j], "<<<\0", 4) == 0) {
+                *flag = 4;
+                //cout << "Flag :" << *flag << endl;
+                i = j;
+                break;
+            }
+            if (memcmp(str[j], "2>\0", 3) == 0) {
+                *flag = 5;
+                cout << "Flag :" << *flag << endl;
+                i = j;
+                break;
+            }
+            if (memcmp(str[j], "2>>\0", 4) == 0) {
+                *flag = 6;
+                cout << "Flag :" << *flag << endl;
+                i = j;
+                break;
+            }
+            if (memcmp(str[j], "0>", 2) == 0) {
+                *flag = 7;
+                //cout << "Flag :" << *flag << endl;
+                i = j;
+                break;
+            }
+            cpystr[aux] = str[j];
+            aux++;
+            i = j;
+        }
+        
+        cpystr[aux] = (char*)'\0';
+        aux++;
+        
+        int pid = fork();
+        if (pid < 0) {
+            perror("fork");
+            exit(1);
+        }
+        else if (pid == 0) {
+            if (*flag == 1)in_redirect(cpystr, str[j+1]);
+            else if (*flag == 2)out_redirect(cpystr, str[j+1], false, 1);
+            else if (*flag == 3)out_redirect(cpystr, str[j+1], true, 1);
+            else if (*flag == -1) {
+                if (execvp(cpystr[0], cpystr) == -1) {
+                    perror("execvp");
+                }
+            }
+            else if (*flag == 4) in_redirect2(cpystr, i, str, size);
+            else if (*flag == 5) out_redirect(cpystr, str[j+1], false, 2);
+            else if (*flag == 6) out_redirect(cpystr, str[j+1], true, 2);
+            else if (*flag == 7) out_redirect(cpystr, str[j+1], true, 0);
+            exit(1);
+        }
+        else if (pid > 0) {
+            int status;
+            wait(&status);
+            if (-1 == status) {
+                perror("wait");
+            }
+        }
+        
+        // clear cpystr in order to execute + commands
+        memset(&cpystr[0], 0, sizeof(cpystr));
+    }
+}
+
+void piping(int index, int size, char *str[]) {
+    
+    char *cpystr[256];
+    char *restof_str[256];
+    
+    int end = 0;
+    int restof_size = 0;
+    //add whatever is before | to string
+    for (int i = 0; i < index; i++) {
+        cpystr[i] = str[i];
+        end = i;
+    }
+    cpystr[end + 1] = (char *)'\0';
+    
+    //add what ever is after the first | to string
+    for (int i = index + 1; i < size; i++) {
+        restof_str[restof_size] = str[i];
+        restof_size++;
+    }
+    restof_str[restof_size + 1] = (char*)'\0';
+    
+    int fd[2];
+    if (pipe(fd) == -1) {
+        perror ("pipe");
+        exit(1);
+    }
+    
+    
+    int pid = fork();
+    
+    if (pid == -1) {
+        perror("fork");
+    }
+    else if (pid == 0) {
+        // child doesn't read
+        if (close(fd[0]) == -1) {
+            perror("close");
+        }
+        // redirect stdout
+        if (dup2(fd[1],1) == -1) {
+            perror("dup");
+        }
+        
+        int check = search_lessthanSign(cpystr, end);
+        if (check == -1) {
+            if (-1 == execvp(cpystr[0], cpystr)) {
+                perror("execvp");
+            }
+        }
+        else  {
+            //if line has pipes but start with redirection <
+            redirect(cpystr, end);
+        }
+        exit(1);
+        
+    }
+    else {
+        
+        int c_in = dup(0);
+        if (c_in == -1) {
+            perror("Dup failed.");
+        }
+        // parent doesn't write
+        if (close(fd[1]) == -1) {
+            perror("Close failed.");
+        }
+        // redirect stdin
+        if (dup2(fd[0],0) == -1) {
+            perror("Dup failed.");
+        }
+        if (wait(0) == -1) {
+            perror("Wait failed");
+        }
+        //look for + pipe
+        int chain = search_pipe(restof_str, restof_size);
+        if (chain != -1) {
+            //execute next pipe command
+            piping(chain, restof_size, restof_str);
+        }
+        else {
+            //if no more pipes
+            *flag = 14;
+            redirect(restof_str, restof_size);
+        }
+        
+        if (dup2(c_in,0) == -1) {
+            perror("Dup failed.");
+        }
+        cout << flush;
+        cin.clear();
+    }
+}
+
+//works
+int checkProcedure(char *str[], int size) {
+    for (int i = 0; i < size; i++) {
+        if (memcmp(str[i], "|\0", 2) == 0) {
+            //cout << "Procedure to | " << endl;
+            return 1;
+        }
+        if (memcmp(str[i], "<", 1) == 0) {
+            //cout << "Procedure to < " << endl;
+            return 1;
+        }
+        if (memcmp(str[i], ">", 1) == 0) {
+            //cout << "Procedure to > " << endl;
+            return 1;
+        }
+        if (memcmp(str[i], "2>", 2) == 0) {
+            //cout << "Procedure to 2> " << endl;
+            return 1;
+        }
+        if (memcmp(str[i], "1>", 2) == 0) {
+            //cout << "Procedure to 1> " << endl;
+            return 1;
+        }
+        if (memcmp(str[i], "0>", 2) == 0) {
+            //cout << "Procedure to 0> " << endl;
+            return 1;
+        }
+    }
+    return 0;
 
 int main()
 {
