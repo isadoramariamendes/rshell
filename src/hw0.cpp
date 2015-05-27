@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <signal.h>
+
+
 using namespace std;
 
 #ifndef MAP_ANONYMOUS
@@ -20,11 +23,42 @@ using namespace std;
 
 vector<int> conn_order;
 int words = 0;
+int p_size = 0;
+char * path[2048];
 static int *flag;
 unsigned long sizeSpaceCmd = 0;
 unsigned long sizeCommands = 0;
 unsigned long sizeTmp = 0;
 unsigned long sizeList = 0;
+
+//execute command using EXECV
+int my_exec(char *newstr[]){
+    int erro = 0;
+    char *p = new char[1024];
+				
+    for(int i = 0; i < p_size; i++) {
+        strcpy(p, path[i]);
+        strcat(p, "/");
+        strcat(p, newstr[0]);
+        erro = execv(p, newstr);
+    }
+    delete[] p;
+    return erro;
+}
+
+/*
+ *  POSTCONDITION: Remove the home from the dir
+ */
+void tok_home(char *path) {
+    char newpath[1024];
+    if (strstr(path,"/home") != NULL) {
+        newpath[0] = '~';
+        for (int i = 1, j = 4; i < 1024; ++i, ++j) {
+            newpath[i] = path[j];
+        }
+    }
+    cout << newpath << endl;
+}
 
 /*
  *  POSTCONDITION: Prints the username and hostname, if possible.
@@ -42,8 +76,19 @@ void userInfo() {
     }
     if (password != NULL && hostname != -1) {
         string username = password->pw_name;
-        cout << username << "@" << machine << " ";
+        cout << username << "@" << machine;
     }
+    
+    char dir[1024] = "";
+    if (!getcwd(dir, 1024)) perror("getcwd");
+    else {
+        //tok_home(dir);
+        cout  << ":" << dir;
+        
+    }
+    
+    //arrumar o home parte
+    
     cout << "$ ";
 }
 
@@ -167,7 +212,8 @@ void tok_space (char **cmdlist, int size) {
             perror("fork");
         }
         else if (pid == 0) {
-            int ret = execvp(temp[argc], temp);
+            //int ret = execvp(temp[argc], temp);
+            int ret = my_exec(temp);
             if (ret == -1) {
                 perror("execvp");
             }
@@ -226,6 +272,20 @@ char *addSpaces(char *cmd) {
             line.insert(l, " ");
             l++;
         }
+        if(line[l]== '|' && line[l+1] == '|'){
+            line.insert(l+2," ");
+            line.insert(l," ");
+            l = l+2;
+        }
+        if(line[l]== '&' && line[l+1] == '&'){
+            line.insert(l+2," ");
+            line.insert(l," ");
+            l = l+2;
+        }
+        if(line[l]== ';'){
+            line.insert(l+1," ");
+            l++;
+        }
     }
     
     sizeSpaceCmd = line.length() + 1;
@@ -269,8 +329,8 @@ void out_redirect(char *cpystr[], char *file_out, bool symbol, int fd_number) {
         }
     }
     
-    if (execvp(cpystr[0], cpystr) == -1)
-        perror("execvp");
+    //if (execvp(cpystr[0], cpystr) == -1)
+    if (my_exec(cpystr) == -1) perror("execvp");
 }
 
 
@@ -288,7 +348,8 @@ void in_redirect(char * cpystr[], char * file_in) {
         exit(1);
     }
     
-    if (execvp(cpystr[0], cpystr) == -1)
+    //if (execvp(cpystr[0], cpystr) == -1)
+    if (my_exec(cpystr) == -1)
         perror("execvp 'in' failed");
 }
 
@@ -327,7 +388,8 @@ void in_redirect2(char * cpystr[], int pos, char * str[], int size) {
             perror("close");
         }
         
-        if (execvp(cpystr[0], cpystr) == -1)
+        //if (execvp(cpystr[0], cpystr) == -1)
+        if (my_exec(cpystr) == -1)
             perror("execvp 'in' failed");
     }
     else if (size == 3) cout << str[pos+1] << endl;
@@ -427,7 +489,8 @@ void redirect(char * str[], int size) {
             else if (*flag == 2)out_redirect(cpystr, str[j+1], false, 1);
             else if (*flag == 3)out_redirect(cpystr, str[j+1], true, 1);
             else if (*flag == -1) {
-                if (execvp(cpystr[0], cpystr) == -1) {
+                //if (execvp(cpystr[0], cpystr) == -1) {
+                if (my_exec(cpystr) == -1) {
                     perror("execvp");
                 }
             }
@@ -495,7 +558,8 @@ void piping(int index, int size, char *str[]) {
         
         int check = search_lessthanSign(cpystr, end);
         if (check == -1) {
-            if (-1 == execvp(cpystr[0], cpystr)) {
+            //if (-1 == execvp(cpystr[0], cpystr)) {
+            if (my_exec(cpystr) == -1) {
                 perror("execvp");
             }
         }
@@ -574,6 +638,28 @@ int checkProcedure(char *str[], int size) {
     return 0;
 }
 
+//get the PATH string and split that searching for ':'
+int get_path(char *path[], int index){
+    index = 0;
+    string location = "PATH";
+    char *pch;
+    char * env = getenv(location.c_str());
+    pch = strtok(env, ":");
+    while (pch != NULL) {
+        path[index] = pch;
+        index++;
+        pch = strtok (NULL, ":");
+    }
+    path[index] = NULL;
+    //returning size
+    return index;
+}
+
+void SigHandler(int signo) {
+    cout << flush;
+    cout << endl;
+    cout << flush;
+}
 
 
 int main()
@@ -581,6 +667,25 @@ int main()
     char **cmdlist = 0;
     char *cmdSpaced = 0;
     char *cmd = 0;
+    
+    struct sigaction c;
+    c.sa_handler = SigHandler;
+    sigemptyset(&c.sa_mask);
+    c.sa_flags = SA_RESTART;
+    if (sigaction(SIGINT, &c, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
+    }
+    struct sigaction z;
+    z.sa_handler = SigHandler;
+    if (sigaction(SIGTSTP, &z, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
+    }
+    
+    //return all the locations inside $PATH
+    p_size = get_path(path, p_size);
+    
     while(1) {
         
         userInfo();
@@ -606,20 +711,47 @@ int main()
             
             //create a shared memory to be accessed from child and process
             flag = (int*)mmap(NULL, sizeof *flag, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-            
-            int pos = search_pipe(cmdlist, index);
-            if (pos != -1) {
-                //cout << "POS == -1" << endl;
-                piping(pos, index, cmdlist);
+            //built in CD command
+            if (memcmp(cmdlist[0], "cd", 2) == 0){
+                if (index  == 1) {
+                    char *home = getenv("HOME");
+                    if(chdir(home) == -1) perror("chdir");
+                }
+                else {
+                    char *path = 0;
+                    if (memcmp(cmdlist[1], "-", 1) == 0) {
+                        path = getenv("OLDPWD");
+                        if(chdir(path) == -1) perror("chdir");
+
+                    }
+                    else {
+                        if(chdir(cmdlist[1]) == -1) perror("chdir");
+
+                    }
+                }
             }
-            else if (checkProcedure(cmdlist, index)){
-                //cout << "CHECKPROCEDURE" << endl;
-                redirect(cmdlist, index);
+            if (memcmp(cmdlist[0], "fg", 2) == 0){
+                if (raise(SIGSTOP) == -1) perror("raise");
+            }
+            if (memcmp(cmdlist[0], "bg", 2) == 0){
+                if (raise(SIGSTOP) == -1) perror("raise");
             }
             else {
-                execute(cmd, cmdlist);
-                //cout << " CMD NORMAL" << endl;
+                int pos = search_pipe(cmdlist, index);
+                if (pos != -1) {
+                    //cout << "POS == -1" << endl;
+                    piping(pos, index, cmdlist);
+                }
+                else if (checkProcedure(cmdlist, index)){
+                    //cout << "CHECKPROCEDURE" << endl;
+                    redirect(cmdlist, index);
+                }
+                else {
+                    execute(cmd, cmdlist);
+                    //cout << " CMD NORMAL" << endl;
+                }
             }
+            
         }
         conn_order.clear();
         //free
