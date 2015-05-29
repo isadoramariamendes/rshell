@@ -14,7 +14,6 @@
 #include <fcntl.h>
 #include <signal.h>
 
-
 using namespace std;
 
 #ifndef MAP_ANONYMOUS
@@ -24,7 +23,7 @@ using namespace std;
 vector<int> conn_order;
 int words = 0;
 int p_size = 0;
-char * path[2048];
+char *path[2048];
 static int *flag;
 unsigned long sizeSpaceCmd = 0;
 unsigned long sizeCommands = 0;
@@ -34,7 +33,7 @@ unsigned long sizeList = 0;
 //execute command using EXECV
 int my_exec(char *newstr[]){
     int erro = 0;
-    char *p = new char[1024];
+    char p[2048];
 				
     for(int i = 0; i < p_size; i++) {
         strcpy(p, path[i]);
@@ -42,7 +41,6 @@ int my_exec(char *newstr[]){
         strcat(p, newstr[0]);
         erro = execv(p, newstr);
     }
-    delete[] p;
     return erro;
 }
 
@@ -50,14 +48,10 @@ int my_exec(char *newstr[]){
  *  POSTCONDITION: Remove the home from the dir
  */
 void tok_home(char *path) {
-    char newpath[1024];
-    if (strstr(path,"/home") != NULL) {
-        newpath[0] = '~';
-        for (int i = 1, j = 4; i < 1024; ++i, ++j) {
-            newpath[i] = path[j];
-        }
+    cout << "~/";
+    for (int j = 5; j< 1024; ++j) {
+        cout << path[j];
     }
-    cout << newpath << endl;
 }
 
 /*
@@ -82,13 +76,14 @@ void userInfo() {
     char dir[1024] = "";
     if (!getcwd(dir, 1024)) perror("getcwd");
     else {
-        //tok_home(dir);
-        cout  << ":" << dir;
-        
+        cout << ":";
+        if (dir[0] == '/' && dir[1] == 'h' && dir[2] == 'o' && dir[3] == 'm' && dir[4] == 'e' ) {
+            tok_home(dir);
+        }
+        else {
+            cout << dir;
+        }
     }
-    
-    //arrumar o home parte
-    
     cout << "$ ";
 }
 
@@ -659,7 +654,11 @@ void SigHandler(int signo) {
     cout << flush;
     cout << endl;
     cout << flush;
+    if (signo == SIGTSTP) {
+        cout << "+\tStopped" << endl;
+    }
 }
+
 
 
 int main()
@@ -686,6 +685,8 @@ int main()
     //return all the locations inside $PATH
     p_size = get_path(path, p_size);
     
+    char *newpwd = 0;
+    char *oldpwd = 0;
     while(1) {
         
         userInfo();
@@ -712,23 +713,46 @@ int main()
             //create a shared memory to be accessed from child and process
             flag = (int*)mmap(NULL, sizeof *flag, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
             //built in CD command
+            newpwd = getenv("PWD");
+            if (newpwd == NULL) {
+                perror("getenv");
+            }
             if (memcmp(cmdlist[0], "cd", 2) == 0){
+                char *path = 0;
                 if (index  == 1) {
-                    char *home = getenv("HOME");
-                    if(chdir(home) == -1) perror("chdir");
+                    path = getenv("HOME");
+                    if (path == NULL) {
+                        perror("getenv");
+                    }
+                    if(chdir(path) == -1) perror("chdir");
                 }
                 else {
-                    char *path = 0;
                     if (memcmp(cmdlist[1], "-", 1) == 0) {
                         path = getenv("OLDPWD");
+                        if (path == NULL) {
+                            perror("getenv");
+                        }
                         if(chdir(path) == -1) perror("chdir");
-
                     }
                     else {
                         if(chdir(cmdlist[1]) == -1) perror("chdir");
-
                     }
                 }
+                oldpwd = getenv("PWD");
+                if (oldpwd == NULL) {
+                    perror("getenv");
+                }
+                if (setenv("OLDPWD", oldpwd, 1) == -1) perror("setenv");
+                //cout << oldpwd << " OLD" << endl;
+
+                newpwd = getcwd(newpwd, 1024);
+                if (oldpwd == NULL) {
+                    perror("getenv");
+                }
+                if (setenv("PWD", newpwd, 1) == -1) perror("setenv");
+                //cout << newpwd << " NEW" << endl;
+
+                
             }
             if (memcmp(cmdlist[0], "fg", 2) == 0){
                 if (raise(SIGSTOP) == -1) perror("raise");
