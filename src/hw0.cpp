@@ -210,7 +210,7 @@ void tok_space (char **cmdlist, int size) {
             //int ret = execvp(temp[argc], temp);
             int ret = my_exec(temp);
             if (ret == -1) {
-                perror("1");
+                perror("execvp");
             }
             exit(1);
         }
@@ -325,7 +325,7 @@ void out_redirect(char *cpystr[], char *file_out, bool symbol, int fd_number) {
     }
     
     //if (execvp(cpystr[0], cpystr) == -1)
-    if (my_exec(cpystr) == -1) perror("2");
+    if (my_exec(cpystr) == -1) perror("execvp");
 }
 
 
@@ -345,7 +345,7 @@ void in_redirect(char * cpystr[], char * file_in) {
     
     //if (execvp(cpystr[0], cpystr) == -1)
     if (my_exec(cpystr) == -1)
-        perror("3");
+        perror("execvp 'in' failed");
 }
 
 void in_redirect2(char * cpystr[], int pos, char * str[], int size) {
@@ -385,7 +385,7 @@ void in_redirect2(char * cpystr[], int pos, char * str[], int size) {
         
         //if (execvp(cpystr[0], cpystr) == -1)
         if (my_exec(cpystr) == -1)
-            perror("4");
+            perror("execvp 'in' failed");
     }
     else if (size == 3) cout << str[pos+1] << endl;
     else cout << "ERROR: no such file or directory" << endl;
@@ -486,7 +486,7 @@ void redirect(char * str[], int size) {
             else if (*flag == -1) {
                 //if (execvp(cpystr[0], cpystr) == -1) {
                 if (my_exec(cpystr) == -1) {
-                    perror("5");
+                    perror("execvp");
                 }
             }
             else if (*flag == 4) in_redirect2(cpystr, i, str, size);
@@ -555,7 +555,7 @@ void piping(int index, int size, char *str[]) {
         if (check == -1) {
             //if (-1 == execvp(cpystr[0], cpystr)) {
             if (my_exec(cpystr) == -1) {
-                perror("6");
+                perror("execvp");
             }
         }
         else  {
@@ -754,10 +754,10 @@ int main()
 
                 
             }
-            if (memcmp(cmdlist[0], "fg", 2) == 0){
+            else if (memcmp(cmdlist[0], "fg", 2) == 0){
                 if (raise(SIGSTOP) == -1) perror("raise");
             }
-            if (memcmp(cmdlist[0], "bg", 2) == 0){
+            else if (memcmp(cmdlist[0], "bg", 2) == 0){
                 if (raise(SIGSTOP) == -1) perror("raise");
             }
             else {
