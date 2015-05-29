@@ -1,0 +1,129 @@
+Script started on Fri 29 May 2015 02:11:53 PM PDT
+~
+imend009@hammer $ pwd
+/home/csmajs/imend009
+~
+imend009@hammer $ cd rshell
+~/rshell
+imend009@hammer $ make
+~/rshell
+imend009@hammer $ git checkout hw3
+Note: checking out 'hw3'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
+
+  git checkout -b new_branch_name
+
+HEAD is now at cfa42e9... Update hw0.cpp
+~/rshell
+imend009@hammer $ make
+~/rshell
+imend009@hammer $ bin/rshell
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ #as you can see, I replaced /home by ~home
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ cd src
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell/src$ cd ..
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ cd
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009$ cd -
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ cd bin
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell/bin$ cd ban
+chdir: No such file or directory
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell/bin$ cd ..
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ cd ..
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009$ cd -
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ cd
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009$ ls
+calcgrade.sh  Desktop  Downloads  #mv.cpp#  rshell  ucr-cs100  VirtualBox VMs
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009$ cd Desktop
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/Desktop$ cd -
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009$ cd rshell
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ cat
+^Z
++	Stopped
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ bg
+
+[1]+  Stopped                 bin/rshell
+~/rshell
+imend009@hammer $ bin/rshell
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ cat 
+
+
+^C
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ fg
+
+[2]+  Stopped                 bin/rshell
+~/rshell
+imend009@hammer $ bin/rshell
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ cat
+a
+a
+asdf
+asdf
+^Z
++	Stopped
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ cat
+q   
+q
+qwer
+qwer
+^C
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ bg
+
+[3]+  Stopped                 bin/rshell
+~/rshell
+imend009@hammer $ bin/rshell
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ fg
+
+[4]+  Stopped                 bin/rshell
+~/rshell
+imend009@hammer $ bin/rshell
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ cd ..
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009$ cd
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009$ cd -
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009$ cd rshell
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell$ cd src #with comments works
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009/rshell/src$ cd
+
+imend009@hammer.cs.ucr.edu:~/csmajs/imend009$ exit
+~/rshell
+imend009@hammer $ exit
+exit
+There are stopped jobs.
+~/rshell
+imend009@hammer $ exit
+exit
+
+Script done on Fri 29 May 2015 02:18:26 PM PDT
