@@ -758,7 +758,7 @@ int main()
                 if (raise(SIGSTOP) == -1) perror("raise");
             }
             else if (memcmp(cmdlist[0], "bg", 2) == 0){
-                if (raise(SIGSTOP) == -1) perror("raise");
+                if (raise(SIGTTIN) == -1) perror("raise");
             }
             else {
                 int pos = search_pipe(cmdlist, index);
