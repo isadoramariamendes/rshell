@@ -48,7 +48,7 @@ int my_exec(char *newstr[]){
  *  POSTCONDITION: Remove the home from the dir
  */
 void tok_home(char *path) {
-    cout << "~/";
+    cout << "~";
     for (int j = 5; j< 1024; ++j) {
         cout << path[j];
     }
@@ -210,7 +210,7 @@ void tok_space (char **cmdlist, int size) {
             //int ret = execvp(temp[argc], temp);
             int ret = my_exec(temp);
             if (ret == -1) {
-                perror("execvp");
+                perror("1");
             }
             exit(1);
         }
@@ -325,7 +325,7 @@ void out_redirect(char *cpystr[], char *file_out, bool symbol, int fd_number) {
     }
     
     //if (execvp(cpystr[0], cpystr) == -1)
-    if (my_exec(cpystr) == -1) perror("execvp");
+    if (my_exec(cpystr) == -1) perror("2");
 }
 
 
@@ -345,7 +345,7 @@ void in_redirect(char * cpystr[], char * file_in) {
     
     //if (execvp(cpystr[0], cpystr) == -1)
     if (my_exec(cpystr) == -1)
-        perror("execvp 'in' failed");
+        perror("3");
 }
 
 void in_redirect2(char * cpystr[], int pos, char * str[], int size) {
@@ -385,7 +385,7 @@ void in_redirect2(char * cpystr[], int pos, char * str[], int size) {
         
         //if (execvp(cpystr[0], cpystr) == -1)
         if (my_exec(cpystr) == -1)
-            perror("execvp 'in' failed");
+            perror("4");
     }
     else if (size == 3) cout << str[pos+1] << endl;
     else cout << "ERROR: no such file or directory" << endl;
@@ -486,7 +486,7 @@ void redirect(char * str[], int size) {
             else if (*flag == -1) {
                 //if (execvp(cpystr[0], cpystr) == -1) {
                 if (my_exec(cpystr) == -1) {
-                    perror("execvp");
+                    perror("5");
                 }
             }
             else if (*flag == 4) in_redirect2(cpystr, i, str, size);
@@ -555,7 +555,7 @@ void piping(int index, int size, char *str[]) {
         if (check == -1) {
             //if (-1 == execvp(cpystr[0], cpystr)) {
             if (my_exec(cpystr) == -1) {
-                perror("execvp");
+                perror("6");
             }
         }
         else  {
