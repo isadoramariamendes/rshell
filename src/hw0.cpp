@@ -48,7 +48,7 @@ int my_exec(char *newstr[]){
  *  POSTCONDITION: Remove the home from the dir
  */
 void tok_home(char *path) {
-    cout << "~/";
+    cout << "~";
     for (int j = 5; j< 1024; ++j) {
         cout << path[j];
     }
@@ -754,10 +754,10 @@ int main()
 
                 
             }
-            if (memcmp(cmdlist[0], "fg", 2) == 0){
+            else if (memcmp(cmdlist[0], "fg", 2) == 0){
                 if (raise(SIGSTOP) == -1) perror("raise");
             }
-            if (memcmp(cmdlist[0], "bg", 2) == 0){
+            else if (memcmp(cmdlist[0], "bg", 2) == 0){
                 if (raise(SIGSTOP) == -1) perror("raise");
             }
             else {
