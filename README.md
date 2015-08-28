@@ -1,5 +1,5 @@
 # rshell
-This is the repository of the HW0, rshell. I have been struggling with git and I hope I'll learn one day. By now I am not sure if I am updating everything right or not and I feel I am going to cry... I am the whole week doing this and I feel like I do not program there is a long time... OH WAIT!... There is a long time :( 
+This is the repository of my own shell. 
 
 # Installation
 To execute the program just follow the steps:
@@ -17,8 +17,5 @@ To execute the program just follow the steps:
 
 # Dependencies
 By now this software do not use any external library.
-
-#Bugs/Limitations/Issues
-Sometimes occurs unexpected erros which seems to be something releated with the mallocs that the new operator makes. However, it is not always, so I am trying to debug everything to do not happen this anymore.
 
 
